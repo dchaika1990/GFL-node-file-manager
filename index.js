@@ -6,6 +6,12 @@ const fileUpload = require('express-fileupload');
 
 const app = express();
 
+const {
+	userRouter
+} = require('./routes');
+
+const { UserController } = require('./controllers');
+
 app.set('view engine', 'hbs');
 app.set('views', __dirname + '/public/views');
 hbs.registerPartials(__dirname + '/public/views/partials');
@@ -18,6 +24,9 @@ app.use(fileUpload({ createParentPath: true }));
 
 app.use('/scripts', express.static(__dirname + '/public/js'));
 app.use('/styles', express.static(__dirname + '/public/css'));
+
+app.use(UserController.isValidUser);
+app.use('/user', userRouter);
 
 // app.use('/upload', (req, res) => {
 // 	if (req.method === 'GET') return res.render('pages/upload.hbs');
