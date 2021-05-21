@@ -3,6 +3,10 @@ const hbs = require('hbs');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const fileUpload = require('express-fileupload');
+const path = require('path');
+
+const UPLOAD_DIR = path.resolve('./uploads');
+global.upload_dir = UPLOAD_DIR;
 
 const app = express();
 
@@ -28,52 +32,52 @@ app.use('/styles', express.static(__dirname + '/public/css'));
 app.use(UserController.isValidUser);
 app.use('/user', userRouter);
 
-// app.use('/upload', (req, res) => {
-// 	if (req.method === 'GET') return res.render('pages/upload.hbs');
-//
-// 	try {
-// 		if (!req.files) {
-// 			res.json({
-// 				success: false,
-// 				message: 'No file uploaded',
-// 			});
-// 		} else {
-// 			let data = [];
-//
-// 			const filesList = Object.values(req.files);
-//
-// 			filesList.forEach((file, i) => {
-// 				file.mv(
-// 					__dirname + `/uploads/${i % 2 ? 'sub/' : ''}` + file.name,
-// 					err => {
-// 						const result = {
-// 							name: file.name,
-// 							mimetype: file.mimetype,
-// 							size: file.size,
-// 							status: true,
-// 						};
-//
-// 						if (err) {
-// 							result.status = false;
-// 						}
-//
-// 						data.push(result);
-//
-// 						if (data.length === filesList.length) {
-// 							res.json({
-// 								success: true,
-// 								message: 'File(s) are uploaded',
-// 								data: data,
-// 							});
-// 						}
-// 					}
-// 				);
-// 			});
-// 		}
-// 	} catch (err) {
-// 		res.status(500).json({ success: false, message: 'Server error' });
-// 	}
-// });
+app.use('/upload', (req, res) => {
+	if (req.method === 'GET') return res.render('pages/upload.hbs');
+
+	try {
+		if (!req.files) {
+			res.json({
+				success: false,
+				message: 'No file uploaded',
+			});
+		} else {
+			let data = [];
+
+			const filesList = Object.values(req.files);
+
+			filesList.forEach((file, i) => {
+				file.mv(
+					__dirname + `/uploads/${i % 2 ? 'sub/' : ''}` + file.name,
+					err => {
+						const result = {
+							name: file.name,
+							mimetype: file.mimetype,
+							size: file.size,
+							status: true,
+						};
+
+						if (err) {
+							result.status = false;
+						}
+
+						data.push(result);
+
+						if (data.length === filesList.length) {
+							res.json({
+								success: true,
+								message: 'File(s) are uploaded',
+								data: data,
+							});
+						}
+					}
+				);
+			});
+		}
+	} catch (err) {
+		res.status(500).json({ success: false, message: 'Server error' });
+	}
+});
 
 app.get('/', (req, res) => {
 	res.render('pages/home.hbs')

@@ -1,4 +1,5 @@
 const userModel = require('../models/userModel');
+const fs = require('fs');
 
 class UserController {
 	register(req, res) {
@@ -11,18 +12,18 @@ class UserController {
 
 		userModel.register(username, password, result => {
 			const {success, msg} = result;
-			console.log('Register')
-			console.log(success)
-			console.log(msg)
 
 			if (!success) {
 				return res.render('pages/create.hbs', {
 					erroMessage: msg,
 				});
 			} else {
-				userModel.loginPromised(username, password, result => {
+				let userDir = upload_dir + '/' + username;
+				if (!fs.existsSync(userDir)){
+					fs.mkdirSync(userDir);
+				}
+				userModel.loginPromised(username, password,result => {
 					const {success, msg} = result;
-
 					if (!success) {
 						return res.render('pages/login.hbs', {
 							erroMessage: msg,
@@ -31,7 +32,7 @@ class UserController {
 					res.cookie('token', msg, {
 						httpOnly: true,
 					});
-					res.redirect('/');
+					res.redirect('/' + username);
 				});
 			}
 		});
@@ -40,12 +41,12 @@ class UserController {
 	login(req, res) {
 		const {username, password} = req.body;
 		const {method} = req;
+		console.log(req.body)
 
 		if (method === 'GET') return res.render('pages/login.hbs');
 
-		userModel.loginPromised(username, password, result => {
+		userModel.loginPromised(username, password,result => {
 			const {success, msg} = result;
-
 			if (!success) {
 				return res.render('pages/login.hbs', {
 					erroMessage: msg,
@@ -54,7 +55,7 @@ class UserController {
 			res.cookie('token', msg, {
 				httpOnly: true,
 			});
-			res.redirect('/');
+			res.redirect('/' + username);
 		});
 	}
 

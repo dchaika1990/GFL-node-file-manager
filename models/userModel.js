@@ -78,7 +78,6 @@ class UserModel {
 										'SELECT token FROM users WHERE id=?',
 										[id],
 										result => {
-											console.log(result);
 											callback({
 												success: true,
 												msg: result.msg[0].token,
@@ -164,8 +163,6 @@ class UserModel {
 				'SELECT name, token FROM users WHERE token=? LIMIT 1',
 				[token]
 			);
-
-			console.log(userToken);
 
 			callback(userToken.length !== 0);
 		} catch (error) {
