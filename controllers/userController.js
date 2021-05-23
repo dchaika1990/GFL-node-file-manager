@@ -38,7 +38,6 @@ class UserController {
 	login(req, res) {
 		const {username, password} = req.body;
 		const {method} = req;
-		console.log(req.body)
 
 		if (method === 'GET') return res.render('pages/login.hbs');
 
@@ -78,12 +77,45 @@ class UserController {
 		const { username } = req.params;
 		const userFiles = fileApp.getFolderItems(upload_dir + '/' + username)
 
+		if (req.method === 'POST') {
+			try {
+				if (!req.files) {
+					res.json({
+						success: false,
+						message: 'No file uploaded',
+					});
+				} else {
+					const filesList = Object.values(req.files);
+					filesList.forEach((file, i) => {
+						file.mv(
+							upload_dir + `/${username}/` + file.name,
+							err => {
+								const result = {
+									name: file.name,
+									mimetype: file.mimetype,
+									size: file.size,
+									status: true,
+								};
+							}
+						);
+					});
+				}
+			} catch (err) {
+				res.status(500).json({ success: false, message: 'Server error' });
+			}
+		}
+
 		res.render('pages/home.hbs', {
 			username: username,
 			userFilesCount: userFiles.length,
 			userFiles: userFiles
 		})
 	}
+
+	// addUserItem(req, res){
+	// 	const {username} = req.params
+	//
+	// }
 }
 
 exports.UserController = new UserController();

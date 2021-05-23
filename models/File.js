@@ -39,7 +39,6 @@ class FileApp{
 							isDir: stats.isDirectory(),
 						});
 					} else {
-						console.log(stats)
 						res.push({
 							name: item,
 							basename: base,
@@ -61,6 +60,27 @@ class FileApp{
 			return res;
 		}
 	};
+
+	addFiles(req, username){
+		console.log(req.files.file)
+		const file = req.files.file
+		console.log(__dirname + `/uploads/${username}/` + file.name)
+		file.mv(
+			__dirname + `/uploads/${username}/` + file.name,
+			err => {
+				const result = {
+					name: file.name,
+					mimetype: file.mimetype,
+					size: file.size,
+					status: true,
+				};
+
+				if (err) {
+					console.log('error')
+				}
+			}
+		);
+	}
 }
 
 module.exports = new FileApp();
