@@ -1,4 +1,5 @@
 const userModel = require('../models/userModel');
+const fileApp = require('../models/File');
 const fs = require('fs');
 
 class UserController {
@@ -18,10 +19,6 @@ class UserController {
 					erroMessage: msg,
 				});
 			} else {
-				let userDir = upload_dir + '/' + username;
-				if (!fs.existsSync(userDir)){
-					fs.mkdirSync(userDir);
-				}
 				userModel.loginPromised(username, password,result => {
 					const {success, msg} = result;
 					if (!success) {
@@ -32,6 +29,7 @@ class UserController {
 					res.cookie('token', msg, {
 						httpOnly: true,
 					});
+					fileApp.createUserDir(username)
 					res.redirect('/' + username);
 				});
 			}
