@@ -4,5 +4,27 @@
 <h1>Home page</h1>
 
 {{username}}
+{{#if userFilesCount}}
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Size</th>
+            <th>Created</th>
+        </tr>
+    {{#each userFiles}}
+        <tr>
+            <td>{{this.name}}</td>
+            {{#if this.isDir}}
+                <td>Directory</td>
+            {{else}}
+                <td>File</td>
+            {{/if}}
+            <td>{{this.size}}</td>
+            <td>{{this.birthtime}}</td>
+        </tr>
+    {{/each}}
+    </table>
+{{/if}}
 
 {{> footer}}
