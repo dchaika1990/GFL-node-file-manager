@@ -106,6 +106,8 @@ class UserController {
 			}
 		}
 
+		// res.status(200).json(userFiles)
+
 		res.render('pages/home.hbs', {
 			username: username,
 			userFilesCount: userFiles.length,
@@ -116,7 +118,7 @@ class UserController {
 	getUserItemsJson(req, res){
 		const { username } = req.params;
 		const userFiles = fileApp.getFolderItems(upload_dir + '/' + username)
-		res.status(200).json(userFiles)
+		res.json(userFiles)
 	}
 }
 

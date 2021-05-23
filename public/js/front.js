@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+	const username = window.location.pathname;
 	const dirs = document.querySelectorAll('[data-type="dir"]')
 	dirs.forEach(dir => {
 		dir.addEventListener('click', (e)=> {
@@ -21,6 +22,5 @@ document.addEventListener('DOMContentLoaded', () => {
 		const response = await res.json()
 		return await response;
 	}
-
-	getGoods('http://localhost:3010/user/dchaika/files').then(data => console.log(data))
+	getGoods(`http://localhost:3010${username}-file/`).then(data => console.log(data))
 })
