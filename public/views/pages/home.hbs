@@ -23,7 +23,11 @@
             <th>Created</th>
         </tr>
     {{#each userFiles}}
-        <tr>
+        {{#if this.isDir}}
+            <tr data-type="dir">
+        {{else}}
+            <tr data-type="file">
+        {{/if}}
             <td>{{this.name}}</td>
             {{#if this.isDir}}
                 <td>Directory</td>

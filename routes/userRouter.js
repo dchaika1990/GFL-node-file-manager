@@ -7,6 +7,7 @@ userRouter.use('/create', UserController.register);
 userRouter.use('/login', UserController.login);
 userRouter.use('/logout', UserController.logout);
 userRouter.use('/:username', UserController.getUserItems);
+userRouter.get('/:username/files', UserController.getUserItemsJson);
 // userRouter.post('/:username', UserController.addUserItem);
 
 userRouter.use((req, res) => {

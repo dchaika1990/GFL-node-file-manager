@@ -1,5 +1,6 @@
 const userModel = require('../models/userModel');
 const fileApp = require('../models/File');
+const fs = require('fs')
 
 class UserController {
 	register(req, res) {
@@ -112,10 +113,11 @@ class UserController {
 		})
 	}
 
-	// addUserItem(req, res){
-	// 	const {username} = req.params
-	//
-	// }
+	getUserItemsJson(req, res){
+		const { username } = req.params;
+		const userFiles = fileApp.getFolderItems(upload_dir + '/' + username)
+		res.status(200).json(userFiles)
+	}
 }
 
 exports.UserController = new UserController();
