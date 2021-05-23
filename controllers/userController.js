@@ -1,6 +1,5 @@
 const userModel = require('../models/userModel');
 const fileApp = require('../models/File');
-const fs = require('fs');
 
 class UserController {
 	register(req, res) {
@@ -73,6 +72,13 @@ class UserController {
 				next();
 			}
 		});
+	}
+
+	getUserItems(req, res){
+		const { username } = req.params;
+		res.render('pages/home.hbs', {
+			username: username
+		})
 	}
 }
 

@@ -1,4 +1,5 @@
 const Database = require('./DB');
+const fileApp = require('./File');
 
 class UserModel {
 	isExists(username, callback) {
@@ -151,7 +152,9 @@ class UserModel {
 					msg: 'Smth went wrong. Please try later.',
 				});
 
-			callback({success: true, msg: userToken[0].token});
+
+			const allFiles = fileApp.getFolderItems(upload_dir + '/' + username);
+			callback({success: true, msg: userToken[0].token, allFiles: allFiles});
 		} catch (error) {
 			callback({success: false, msg: JSON.stringify(error)});
 		}

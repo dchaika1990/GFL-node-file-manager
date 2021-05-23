@@ -31,6 +31,9 @@ app.use('/styles', express.static(__dirname + '/public/css'));
 
 app.use(UserController.isValidUser);
 app.use('/user', userRouter);
+// app.get('/:username', (req, res) => {
+// 	res.render('pages/home.hbs')
+// });
 
 app.use('/upload', (req, res) => {
 	if (req.method === 'GET') return res.render('pages/upload.hbs');
@@ -78,10 +81,6 @@ app.use('/upload', (req, res) => {
 		res.status(500).json({ success: false, message: 'Server error' });
 	}
 });
-
-app.get('/', (req, res) => {
-	res.render('pages/home.hbs')
-})
 
 app.use((req, res) => {
 	res.render('pages/404.hbs')
