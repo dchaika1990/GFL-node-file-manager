@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const os = require('os')
 
 class FileApp{
 	createUserDir(username) {
@@ -20,6 +21,15 @@ class FileApp{
 
 		return size;
 	};
+	__formatSizeUnits(bytes){
+		if      (bytes >= 1073741824) { bytes = (bytes / 1073741824).toFixed(2) + " GB"; }
+		else if (bytes >= 1048576)    { bytes = (bytes / 1048576).toFixed(2) + " MB"; }
+		else if (bytes >= 1024)       { bytes = (bytes / 1024).toFixed(2) + " KB"; }
+		else if (bytes > 1)           { bytes = bytes + " bytes"; }
+		else if (bytes == 1)          { bytes = bytes + " byte"; }
+		else                          { bytes = "0 bytes"; }
+		return bytes;
+	}
 	getFolderItems(pathName) {
 		const res = [];
 		try {
@@ -28,23 +38,26 @@ class FileApp{
 				try {
 					const { basename: base, dir } = path.parse(path.join(pathName, item));
 					const stats = fs.statSync(path.join(pathName, item));
+
 					if (stats.isFile()) {
+						// console.log(item, stats.size)
 						res.push({
 							name: item,
 							basename: base,
 							dir,
-							size: stats.size,
-							birthtime: stats.birthtime,
+							size: this.__formatSizeUnits(stats.size),
+							birthtime: new Date(stats.ctime).toLocaleDateString(),
 							isFile: stats.isFile(),
 							isDir: stats.isDirectory(),
 						});
+						// console.log('----------------------')
 					} else {
 						res.push({
 							name: item,
 							basename: base,
 							dir,
-							size: stats.size,
-							birthtime: stats.birthtime,
+							size: this.__formatSizeUnits(stats.size),
+							birthtime: new Date(stats.ctime).toLocaleDateString(),
 							isFile: stats.isFile(),
 							isDir: stats.isDirectory(),
 							items: this.getFolderItems(path.join(pathName, item)),
@@ -61,25 +74,28 @@ class FileApp{
 		}
 	};
 
-	addFiles(req, username){
-		console.log(req.files.file)
-		const file = req.files.file
-		console.log(__dirname + `/uploads/${username}/` + file.name)
-		file.mv(
-			__dirname + `/uploads/${username}/` + file.name,
-			err => {
-				const result = {
-					name: file.name,
-					mimetype: file.mimetype,
-					size: file.size,
-					status: true,
-				};
-
-				if (err) {
-					console.log('error')
+	addFiles(filesList, username){
+		filesList.forEach((file, i) => {
+			file.mv(
+				upload_dir + `/${username}/` + file.name,
+				err => {
+					const result = {
+						name: file.name,
+						mimetype: file.mimetype,
+						size: file.size,
+						status: true,
+					};
 				}
-			}
-		);
+			);
+		});
+	}
+	getMemory(){
+		const allMemory = os.totalmem();
+		const freeMemory = os.freemem();
+		return {
+			allMemory: this.__formatSizeUnits(allMemory),
+			freeMemory: this.__formatSizeUnits(freeMemory),
+		};
 	}
 }
 

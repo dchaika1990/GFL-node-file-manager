@@ -1,44 +1,41 @@
 {{> header title='Home'}}
 
 
-<h1>Home page</h1>
-<form action="/user/{{username}}" method="post" enctype="multipart/form-data">
-    <div class="form-group">
-        <label for="file">File input</label>
-        <input type="file" id="file"  name="file[0]">
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h1>Home page</h1>
+                <form action="/user/{{username}}" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="file">File input</label>
+                        <input type="file" id="file" name="file[0]">
+                    </div>
 
-        <label for="file1">File input</label>
-        <input type="file" id="file1"  name="file[1]">
+                    <button type='submit' class='btn btn-success'>Upload</button>
+                </form>
+
+                {{#if userFilesCount}}
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Size</th>
+                                    <th>Created</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                {{else}}
+                    <p>There are no files</p>
+                {{/if}}
+            </div>
+        </div>
     </div>
-
-    <button type='submit' class='btn btn-default'>Upload</button>
-</form>
-{{username}}
-{{#if userFilesCount}}
-    <table>
-        <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Size</th>
-            <th>Created</th>
-        </tr>
-    {{#each userFiles}}
-        {{#if this.isDir}}
-            <tr data-type="dir">
-        {{else}}
-            <tr data-type="file">
-        {{/if}}
-            <td>{{this.name}}</td>
-            {{#if this.isDir}}
-                <td>Directory</td>
-            {{else}}
-                <td>File</td>
-            {{/if}}
-            <td>{{this.size}}</td>
-            <td>{{this.birthtime}}</td>
-        </tr>
-    {{/each}}
-    </table>
-{{/if}}
+</section>
 
 {{> footer}}

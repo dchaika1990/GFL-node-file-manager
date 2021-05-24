@@ -1,6 +1,6 @@
 const userModel = require('../models/userModel');
 const fileApp = require('../models/File');
-const fs = require('fs')
+
 
 class UserController {
 	register(req, res) {
@@ -87,26 +87,12 @@ class UserController {
 					});
 				} else {
 					const filesList = Object.values(req.files);
-					filesList.forEach((file, i) => {
-						file.mv(
-							upload_dir + `/${username}/` + file.name,
-							err => {
-								const result = {
-									name: file.name,
-									mimetype: file.mimetype,
-									size: file.size,
-									status: true,
-								};
-							}
-						);
-					});
+					fileApp.addFiles(filesList, username)
 				}
 			} catch (err) {
 				res.status(500).json({ success: false, message: 'Server error' });
 			}
 		}
-
-		// res.status(200).json(userFiles)
 
 		res.render('pages/home.hbs', {
 			username: username,
@@ -118,7 +104,7 @@ class UserController {
 	getUserItemsJson(req, res){
 		const { username } = req.params;
 		const userFiles = fileApp.getFolderItems(upload_dir + '/' + username)
-		res.json(userFiles)
+		res.json({userFiles, memory: fileApp.getMemory()})
 	}
 }
 

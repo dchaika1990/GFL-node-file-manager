@@ -1,4 +1,19 @@
 </div>
 <script src="/scripts/front.js"></script>
+<script type="text/template" class="tableBody">
+
+    ${ data.isDir
+        ? `<tr data-type="dir">`
+        : `<tr data-type="file">`
+    }
+        <td data-name>${data.name}</td>
+        ${ data.isDir
+            ? `<td>Directory</td>`
+            : `<td>File</td>`
+        }
+        <td data-size>${data.size}</td>
+        <td data-created>${data.birthtime}</td>
+    </tr>
+</script>
 </body>
 </html>
