@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const os = require('os')
+const USER_MAX_SIZE = 52428800;
 
 class FileApp{
 	createUserDir(username) {
@@ -8,19 +8,14 @@ class FileApp{
 			fs.mkdirSync(upload_dir + '/' + username);
 		}
 	}
-	static getFolderSize(dirTree) {
-		const dirItems = Object.keys(dirTree);
+	__getFolderSize(dirTree) {
 		let size = 0;
-
-		dirItems.forEach(item => {
-			const itemObj = dirTree[item];
-
-			size += itemObj.isFile ? itemObj.size : getFolderSize(itemObj.items);
-			itemObj.isDir && (itemObj.size = size);
-		});
-
+		dirTree.forEach(item => {
+			size += item.sizeBytes
+		})
 		return size;
 	};
+
 	__formatSizeUnits(bytes){
 		if      (bytes >= 1073741824) { bytes = (bytes / 1073741824).toFixed(2) + " GB"; }
 		else if (bytes >= 1048576)    { bytes = (bytes / 1048576).toFixed(2) + " MB"; }
@@ -30,32 +25,35 @@ class FileApp{
 		else                          { bytes = "0 bytes"; }
 		return bytes;
 	}
+
 	getFolderItems(pathName) {
 		const res = [];
 		try {
 			const dirItems = fs.readdirSync(pathName);
-			dirItems.forEach(item => {
+			dirItems.forEach((item, i) => {
 				try {
 					const { basename: base, dir } = path.parse(path.join(pathName, item));
 					const stats = fs.statSync(path.join(pathName, item));
-
+					let id = Math.floor(Math.random() * 10000000) + i
 					if (stats.isFile()) {
-						// console.log(item, stats.size)
 						res.push({
+							id: id,
 							name: item,
 							basename: base,
 							dir,
+							sizeBytes: stats.size,
 							size: this.__formatSizeUnits(stats.size),
 							birthtime: new Date(stats.ctime).toLocaleDateString(),
 							isFile: stats.isFile(),
 							isDir: stats.isDirectory(),
 						});
-						// console.log('----------------------')
 					} else {
 						res.push({
+							id: id,
 							name: item,
 							basename: base,
 							dir,
+							sizeBytes: stats.size,
 							size: this.__formatSizeUnits(stats.size),
 							birthtime: new Date(stats.ctime).toLocaleDateString(),
 							isFile: stats.isFile(),
@@ -80,6 +78,7 @@ class FileApp{
 				upload_dir + `/${username}/` + file.name,
 				err => {
 					const result = {
+						id: i,
 						name: file.name,
 						mimetype: file.mimetype,
 						size: file.size,
@@ -89,12 +88,11 @@ class FileApp{
 			);
 		});
 	}
-	getMemory(){
-		const allMemory = os.totalmem();
-		const freeMemory = os.freemem();
+	getMemory(pathname){
+		const usedMemory = this.__getFolderSize(pathname);
 		return {
-			allMemory: this.__formatSizeUnits(allMemory),
-			freeMemory: this.__formatSizeUnits(freeMemory),
+			allMemory: this.__formatSizeUnits(USER_MAX_SIZE),
+			freeMemory: this.__formatSizeUnits(USER_MAX_SIZE - usedMemory),
 		};
 	}
 }

@@ -3,8 +3,8 @@
 <script type="text/template" class="tableBody">
 
     ${ data.isDir
-        ? `<tr data-type="dir">`
-        : `<tr data-type="file">`
+        ? `<tr data-id="${data.id}" data-type="dir">`
+        : `<tr data-id="${data.id}" data-type="file">`
     }
         <td data-name>${data.name}</td>
         ${ data.isDir
@@ -14,6 +14,9 @@
         <td data-size>${data.size}</td>
         <td data-created>${data.birthtime}</td>
     </tr>
+</script>
+<script type="text/html" class="freeSpaceTemplate">
+    <p>Free memory ${data.freeMemory} of ${data.allMemory}</p>
 </script>
 </body>
 </html>

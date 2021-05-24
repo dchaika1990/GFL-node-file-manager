@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	const username = window.location.pathname;
 	const dirs = document.querySelectorAll('[data-type="dir"]')
 	let tableBody = document.querySelector('.table tbody');
+	let memoryWrap = document.querySelector('.space');
 
 	dirs.forEach(dir => {
 		dir.addEventListener('click', (e)=> {
@@ -14,8 +15,14 @@ document.addEventListener('DOMContentLoaded', () => {
 		return new Function('data', 'return `' + template + '`');
 	}
 
+	const renderFileSystemMemory = (memory) => {
+		memoryWrap.innerHTML = '';
+		let listRender = makeRender('.freeSpaceTemplate');
+		memoryWrap.innerHTML = listRender(memory);
+	}
 
-	const renderTableBody = ({userFiles}) => {
+
+	const renderTableBody = (userFiles) => {
 		tableBody.innerHTML = '';
 		let listRender = makeRender('.tableBody');
 		let template = userFiles.map((data) => listRender(data))
@@ -29,5 +36,8 @@ document.addEventListener('DOMContentLoaded', () => {
 		const response = await res.json()
 		return await response;
 	}
-	getRequest(`http://localhost:3010${username}-file/`).then(data => renderTableBody(data))
+	getRequest(`http://localhost:3010${username}-file/`).then(({userFiles, memory}) => {
+		renderTableBody(userFiles);
+		renderFileSystemMemory(memory);
+	})
 })

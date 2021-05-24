@@ -104,7 +104,7 @@ class UserController {
 	getUserItemsJson(req, res){
 		const { username } = req.params;
 		const userFiles = fileApp.getFolderItems(upload_dir + '/' + username)
-		res.json({userFiles, memory: fileApp.getMemory()})
+		res.json({userFiles, memory: fileApp.getMemory(userFiles)})
 	}
 }
 
