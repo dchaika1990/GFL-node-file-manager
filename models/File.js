@@ -1,13 +1,17 @@
 const fs = require("fs");
 const path = require("path");
-const USER_MAX_SIZE = 52428800;
 
-class FileApp{
+
+class FileApp {
+	USER_MAX_SIZE = 12428800 / 2;
+	USED_MEMORY = 0;
+
 	createUserDir(username) {
-		if (!fs.existsSync(upload_dir + '/' + username)){
+		if (!fs.existsSync(upload_dir + '/' + username)) {
 			fs.mkdirSync(upload_dir + '/' + username);
 		}
 	}
+
 	__getFolderSize(dirTree) {
 		let size = 0;
 		dirTree.forEach(item => {
@@ -16,13 +20,20 @@ class FileApp{
 		return size;
 	};
 
-	__formatSizeUnits(bytes){
-		if      (bytes >= 1073741824) { bytes = (bytes / 1073741824).toFixed(2) + " GB"; }
-		else if (bytes >= 1048576)    { bytes = (bytes / 1048576).toFixed(2) + " MB"; }
-		else if (bytes >= 1024)       { bytes = (bytes / 1024).toFixed(2) + " KB"; }
-		else if (bytes > 1)           { bytes = bytes + " bytes"; }
-		else if (bytes == 1)          { bytes = bytes + " byte"; }
-		else                          { bytes = "0 bytes"; }
+	__formatSizeUnits(bytes) {
+		if (bytes >= 1073741824) {
+			bytes = (bytes / 1073741824).toFixed(2) + " GB";
+		} else if (bytes >= 1048576) {
+			bytes = (bytes / 1048576).toFixed(2) + " MB";
+		} else if (bytes >= 1024) {
+			bytes = (bytes / 1024).toFixed(2) + " KB";
+		} else if (bytes > 1) {
+			bytes = bytes + " bytes";
+		} else if (bytes == 1) {
+			bytes = bytes + " byte";
+		} else {
+			bytes = "0 bytes";
+		}
 		return bytes;
 	}
 
@@ -32,7 +43,7 @@ class FileApp{
 			const dirItems = fs.readdirSync(pathName);
 			dirItems.forEach((item, i) => {
 				try {
-					const { basename: base, dir } = path.parse(path.join(pathName, item));
+					const {basename: base, dir} = path.parse(path.join(pathName, item));
 					const stats = fs.statSync(path.join(pathName, item));
 					let id = Math.floor(Math.random() * 10000000) + i
 					if (stats.isFile()) {
@@ -72,11 +83,17 @@ class FileApp{
 		}
 	};
 
-	addFiles(filesList, username){
+	get AllMemory() {
+		return this.USER_MAX_SIZE
+	}
+	get UsedMemory() {
+		return this.USED_MEMORY
+	}
+
+
+	addFiles(filesList, username) {
 		filesList.forEach((file, i) => {
-			file.mv(
-				upload_dir + `/${username}/` + file.name,
-				err => {
+			file.mv(upload_dir + `/${username}/` + file.name, (err) => {
 					const result = {
 						id: i,
 						name: file.name,
@@ -88,11 +105,12 @@ class FileApp{
 			);
 		});
 	}
-	getMemory(pathname){
-		const usedMemory = this.__getFolderSize(pathname);
+
+	getMemory(pathname) {
+		this.USED_MEMORY = this.__getFolderSize(pathname);
 		return {
-			allMemory: this.__formatSizeUnits(USER_MAX_SIZE),
-			freeMemory: this.__formatSizeUnits(USER_MAX_SIZE - usedMemory),
+			allMemory: this.__formatSizeUnits(this.USER_MAX_SIZE),
+			freeMemory: this.__formatSizeUnits(this.USER_MAX_SIZE - this.USED_MEMORY),
 		};
 	}
 }

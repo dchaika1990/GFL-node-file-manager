@@ -19,7 +19,7 @@ class UserController {
 					erroMessage: msg,
 				});
 			} else {
-				userModel.loginPromised(username, password,result => {
+				userModel.loginPromised(username, password, result => {
 					const {success, msg} = result;
 					if (!success) {
 						return res.render('pages/login.hbs', {
@@ -42,7 +42,7 @@ class UserController {
 
 		if (method === 'GET') return res.render('pages/login.hbs');
 
-		userModel.loginPromised(username, password,result => {
+		userModel.loginPromised(username, password, result => {
 			const {success, msg} = result;
 			if (!success) {
 				return res.render('pages/login.hbs', {
@@ -74,8 +74,8 @@ class UserController {
 		});
 	}
 
-	getUserItems(req, res){
-		const { username } = req.params;
+	getUserItems(req, res) {
+		const {username} = req.params;
 		const userFiles = fileApp.getFolderItems(upload_dir + '/' + username)
 
 		if (req.method === 'POST') {
@@ -87,10 +87,20 @@ class UserController {
 					});
 				} else {
 					const filesList = Object.values(req.files);
-					fileApp.addFiles(filesList, username)
+					const fileSize = filesList[0].size
+					if ((fileApp.UsedMemory + fileSize) < fileApp.AllMemory) {
+						fileApp.addFiles(filesList, username)
+					} else {
+						res.render('pages/home.hbs', {
+							success: 'Not Enough Memory',
+							username: username,
+							userFilesCount: userFiles.length,
+							userFiles: userFiles
+						})
+					}
 				}
 			} catch (err) {
-				res.status(500).json({ success: false, message: 'Server error' });
+				res.status(500).json({success: false, message: 'Server error'});
 			}
 		}
 
@@ -101,8 +111,8 @@ class UserController {
 		})
 	}
 
-	getUserItemsJson(req, res){
-		const { username } = req.params;
+	getUserItemsJson(req, res) {
+		const {username} = req.params;
 		const userFiles = fileApp.getFolderItems(upload_dir + '/' + username)
 		res.json({userFiles, memory: fileApp.getMemory(userFiles)})
 	}
