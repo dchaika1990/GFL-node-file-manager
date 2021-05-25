@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
 	let state = [];
 	let stateInner = [];
 	let idDir;
-	let history = [];
 
 	const makeRender = (selector) => {
 		let template = document.querySelector(selector).innerHTML;
@@ -22,12 +21,9 @@ document.addEventListener('DOMContentLoaded', () => {
 	const renderTableBody = (userFiles, dir = false, up = false) => {
 		tableBody.innerHTML = '';
 		let listRender = makeRender('.tableBody');
-		let template;
+		let template = userFiles.map((data) => listRender(data))
 		if (up) {
-			template = userFiles
-		} else {
-			template = userFiles.map((data) => listRender(data))
-			history.push(template)
+			stateInner.slice(0, -1)
 		}
 		if (dir) {
 			let templateDirUp = `
@@ -36,7 +32,6 @@ document.addEventListener('DOMContentLoaded', () => {
 				</tr>
 			`;
 			template = [templateDirUp, ...template]
-			console.log('history: ', history)
 		}
 		tableBody.innerHTML = (template.join(''))
 	}
@@ -49,18 +44,17 @@ document.addEventListener('DOMContentLoaded', () => {
 	}
 
 	const renderDirItems = (idDir) => {
-		console.log(stateInner)
-		let dirItems = stateInner.filter(obj =>{
+		let dirItems = stateInner[stateInner.length - 1].filter(obj =>{
 			return  obj.id === +idDir
 		})
-		stateInner = dirItems[0].items
-		console.log('StateInner: ', stateInner)
+		stateInner.push(dirItems[0].items)
 		renderTableBody(dirItems[0].items, true)
 	}
 
 	getRequest(`http://localhost:3010${username}-file/`).then(({userFiles, memory}) => {
 		renderTableBody(userFiles);
-		state = stateInner = userFiles;
+		state = userFiles;
+		stateInner.push(state);
 		renderFileSystemMemory(memory);
 	})
 
@@ -73,14 +67,12 @@ document.addEventListener('DOMContentLoaded', () => {
 			renderDirItems(idDir)
 		}
 		if (e.target.closest('[data-up]')) {
-			elem = e.target.closest('[data-up]');
-			history = history.slice(0, -1)
+			stateInner = stateInner.slice(0, -1)
 			let dir = true;
-			if (history.length === 1) {
-				stateInner = state
+			if (stateInner.length === 1) {
 				dir = false
 			}
-			renderTableBody(history[history.length - 1], dir, true)
+			renderTableBody(stateInner[stateInner.length - 1], dir, true)
 		}
 	})
 })

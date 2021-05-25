@@ -59,4 +59,9 @@ body {
 }
 .table tr:hover{
   background: #aca6a6;
+  cursor: pointer;
+}
+
+.table tr{
+  /*background: url("../img/folder.svg");*/
 }

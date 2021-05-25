@@ -28,6 +28,7 @@ app.use(cookieParser());
 
 app.use('/scripts', express.static(__dirname + '/public/js'));
 app.use('/styles', express.static(__dirname + '/public/css'));
+app.use('/img', express.static(__dirname + '/public/img'));
 
 app.use(UserController.isValidUser);
 app.use('/user', userRouter);
