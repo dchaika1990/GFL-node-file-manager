@@ -45,12 +45,18 @@ class FileApp {
 					const {basename: base, dir} = path.parse(path.join(pathName, item));
 					const stats = fs.statSync(path.join(pathName, item));
 					let id = Math.floor(Math.random() * 10000000) + i
+					let extname = path.extname(item)
+					let isImg = false;
+					if (extname === '.jpg' || extname === '.png') {
+						isImg = true
+					}
 					if (stats.isFile()) {
 						res.push({
 							id: id,
 							dirname: __dirname,
 							name: item,
 							src: '/' + pathName + '/' + item,
+							isImg,
 							basename: base,
 							dir,
 							sizeBytes: stats.size,
@@ -87,6 +93,7 @@ class FileApp {
 	get AllMemory() {
 		return this.USER_MAX_SIZE
 	}
+
 	get UsedMemory() {
 		return this.USED_MEMORY
 	}

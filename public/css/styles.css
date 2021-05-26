@@ -65,3 +65,8 @@ body {
 .table tr{
   /*background: url("../img/folder.svg");*/
 }
+
+img{
+  max-width: 100%;
+  height: auto;
+}

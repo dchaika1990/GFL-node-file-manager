@@ -4,6 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
 	let tableBody = document.querySelector('.table tbody');
 	let memoryWrap = document.querySelector('.space');
 	let infoUl = document.querySelector('.information-content ul');
+	let infoImg = document.querySelector('.information-media');
+	let infoDownload = document.querySelector('.information-download');
 	let state = [];
 	let stateInner = [];
 	let idDir;
@@ -37,9 +39,26 @@ document.addEventListener('DOMContentLoaded', () => {
 		tableBody.innerHTML = (template.join(''))
 	}
 
-	const renderInfo = (options) => {
+	const renderInfo = (options, imgSrc = '', isImg = false) => {
 		let templateRender = makeRender('.infoTemplate')
 		let template = options.map((data) => templateRender(data))
+		infoImg.innerHTML = '';
+		infoDownload.innerHTML = '';
+		if ('true' === isImg) {
+			console.log(isImg)
+			let imgTag = document.createElement('img');
+			imgTag.src = imgSrc
+			imgTag.alt = 'image'
+			infoImg.append(imgTag)
+		}
+		console.log(options)
+		if (imgSrc){
+			let downloadLink = document.createElement('a');
+			downloadLink.href = imgSrc
+			downloadLink.download = options[0].value
+			downloadLink.textContent = 'Download'
+			infoDownload.append(downloadLink)
+		}
 		infoUl.innerHTML = template.join('')
 	}
 
@@ -99,13 +118,15 @@ document.addEventListener('DOMContentLoaded', () => {
 					value: elem.getAttribute('data-items-length')
 				})
 			}
-			// if (elem.hasAttribute('data-src')) {
-			// 	options.push({
-			// 		name: 'src',
-			// 		value: elem.getAttribute('data-src')
-			// 	})
-			// }
-			renderInfo(options)
+			let path;
+			if (elem.hasAttribute('data-src')) {
+				path = elem.getAttribute('data-src');
+			}
+			let isImg;
+			if (elem.hasAttribute('data-is-img')) {
+				isImg = elem.getAttribute('data-is-img');
+			}
+			renderInfo(options, path, isImg)
 		}
 	})
 })

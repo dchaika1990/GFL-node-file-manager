@@ -4,7 +4,7 @@
 
     ${ data.isDir
         ? `<tr data-id="${data.id}" data-items-length="${data.items.length}" data-type="dir">`
-        : `<tr data-id="${data.id}" data-src="${data.src}" data-type="file">`
+        : `<tr data-id="${data.id}" data-is-img="${data.isImg}" data-src="${data.src}" data-type="file">`
     }
         <td data-name>${data.name}</td>
         ${ data.isDir
