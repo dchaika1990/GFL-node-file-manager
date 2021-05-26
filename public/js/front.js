@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	const table = document.querySelector('.table')
 	let tableBody = document.querySelector('.table tbody');
 	let memoryWrap = document.querySelector('.space');
+	let infoUl = document.querySelector('.information-content ul');
 	let state = [];
 	let stateInner = [];
 	let idDir;
@@ -34,6 +35,12 @@ document.addEventListener('DOMContentLoaded', () => {
 			template = [templateDirUp, ...template]
 		}
 		tableBody.innerHTML = (template.join(''))
+	}
+
+	const renderInfo = (options) => {
+		let templateRender = makeRender('.infoTemplate')
+		let template = options.map((data) => templateRender(data))
+		infoUl.innerHTML = template.join('')
 	}
 
 	const getRequest = async (url) => {
@@ -73,6 +80,32 @@ document.addEventListener('DOMContentLoaded', () => {
 				dir = false
 			}
 			renderTableBody(stateInner[stateInner.length - 1], dir, true)
+		}
+	})
+
+	table.addEventListener('click', e => {
+		e.stopPropagation();
+		let elem;
+		if (e.target.closest('[data-type]')) {
+			elem = e.target.closest('[data-type]');
+			let options = [
+				{name: 'Name', value: elem.querySelector('[data-name]').textContent},
+				{name: 'Size', value: elem.querySelector('[data-size]').textContent},
+				{name: 'Created', value: elem.querySelector('[data-created]').textContent},
+			]
+			if (elem.hasAttribute('data-items-length')) {
+				options.push({
+					name: 'Files count',
+					value: elem.getAttribute('data-items-length')
+				})
+			}
+			// if (elem.hasAttribute('data-src')) {
+			// 	options.push({
+			// 		name: 'src',
+			// 		value: elem.getAttribute('data-src')
+			// 	})
+			// }
+			renderInfo(options)
 		}
 	})
 })

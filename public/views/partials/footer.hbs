@@ -3,8 +3,8 @@
 <script type="text/template" class="tableBody">
 
     ${ data.isDir
-        ? `<tr data-id="${data.id}" data-type="dir">`
-        : `<tr data-id="${data.id}" data-type="file">`
+        ? `<tr data-id="${data.id}" data-items-length="${data.items.length}" data-type="dir">`
+        : `<tr data-id="${data.id}" data-src="${data.src}" data-type="file">`
     }
         <td data-name>${data.name}</td>
         ${ data.isDir
@@ -15,8 +15,14 @@
         <td data-created>${data.birthtime}</td>
     </tr>
 </script>
-<script type="text/html" class="freeSpaceTemplate">
+<script type="text/template" class="freeSpaceTemplate">
     <p>Free memory ${data.freeMemory} of ${data.allMemory}</p>
+</script>
+<script type="text/template" class="infoTemplate">
+    <li>
+        <strong class="title">${data.name}</strong>
+        <span class="value">${data.value}</span>
+    </li>
 </script>
 </body>
 </html>

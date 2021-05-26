@@ -76,7 +76,7 @@ class UserController {
 
 	getUserItems(req, res) {
 		const {username} = req.params;
-		const userFiles = fileApp.getFolderItems(upload_dir + '/' + username)
+		const userFiles = fileApp.getFolderItems(upload_dir + '/' + username, username)
 
 		if (req.method === 'POST') {
 			try {
@@ -107,13 +107,14 @@ class UserController {
 		res.render('pages/home.hbs', {
 			username: username,
 			userFilesCount: userFiles.length,
-			userFiles: userFiles
+			userFiles: userFiles,
+			memory: fileApp.getMemory(userFiles).usedMemory
 		})
 	}
 
 	getUserItemsJson(req, res) {
 		const {username} = req.params;
-		const userFiles = fileApp.getFolderItems(upload_dir + '/' + username)
+		const userFiles = fileApp.getFolderItems(upload_dir + '/' + username, username)
 		res.json({userFiles, memory: fileApp.getMemory(userFiles)})
 	}
 }

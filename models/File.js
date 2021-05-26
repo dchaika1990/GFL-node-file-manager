@@ -1,7 +1,6 @@
 const fs = require("fs");
 const path = require("path");
 
-
 class FileApp {
 	USER_MAX_SIZE = 12428800 / 2;
 	USED_MEMORY = 0;
@@ -37,7 +36,7 @@ class FileApp {
 		return bytes;
 	}
 
-	getFolderItems(pathName) {
+	getFolderItems(pathName, username) {
 		const res = [];
 		try {
 			const dirItems = fs.readdirSync(pathName);
@@ -49,7 +48,9 @@ class FileApp {
 					if (stats.isFile()) {
 						res.push({
 							id: id,
+							dirname: __dirname,
 							name: item,
+							src: '/' + pathName + '/' + item,
 							basename: base,
 							dir,
 							sizeBytes: stats.size,
@@ -111,6 +112,7 @@ class FileApp {
 		return {
 			allMemory: this.__formatSizeUnits(this.USER_MAX_SIZE),
 			freeMemory: this.__formatSizeUnits(this.USER_MAX_SIZE - this.USED_MEMORY),
+			usedMemory: this.__formatSizeUnits(this.USED_MEMORY)
 		};
 	}
 }
