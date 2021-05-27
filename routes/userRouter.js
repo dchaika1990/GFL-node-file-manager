@@ -6,7 +6,8 @@ userRouter.use(fileUpload({ createParentPath: true }));
 userRouter.use('/create', UserController.register);
 userRouter.use('/login', UserController.login);
 userRouter.use('/logout', UserController.logout);
-userRouter.get('/:username-file', UserController.getUserItemsJson);
+// userRouter.get('/:username-file', UserController.getUserItemsJson);
+userRouter.get('/:username-file', UserController.getUserDirItemsJson);
 userRouter.use('/:username', UserController.getUserItems);
 // userRouter.post('/:username', UserController.addUserItem);
 

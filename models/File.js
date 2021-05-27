@@ -36,7 +36,7 @@ class FileApp {
 		return bytes;
 	}
 
-	getFolderItems(pathName, username) {
+	getFolderItems(pathName) {
 		const res = [];
 		try {
 			const dirItems = fs.readdirSync(pathName);

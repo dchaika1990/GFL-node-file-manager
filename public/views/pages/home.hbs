@@ -30,15 +30,22 @@
                             {{#if userFilesCount}}
                                 {{#each userFiles}}
                                     <tr data-id="{{this.id}}"
-                                        {{#if this.isDir}}data-type="dir" {{else}}data-type="file"{{/if}}>
-                                        <td>{{this.name}}</td>
+                                        {{#if this.isDir}}
+                                            data-type="dir"
+                                            data-dir="{{this.dir}}"
+                                        {{else}}
+                                            data-type="file"
+                                        {{/if}}
+                                        data-is-img="{{this.isImg}}" data-src="{{this.src}}"
+                                    >
+                                        <td data-name>{{this.name}}</td>
                                         {{#if this.isDir}}
                                             <td>Directory</td>
                                         {{else}}
                                             <td>File</td>
                                         {{/if}}
-                                        <td>{{this.size}}</td>
-                                        <td>{{this.birthtime}}</td>
+                                        <td data-size>{{this.size}}</td>
+                                        <td data-created>{{this.birthtime}}</td>
 
                                     </tr>
                                 {{/each }}

@@ -76,8 +76,15 @@ class UserController {
 
 	getUserItems(req, res) {
 		const {username} = req.params;
-		let userFiles = fileApp.getFolderItems(upload_dir + '/' + username, username)
+		const {idDir} = req.query;
+		let userFiles;
 		let success = '';
+		if (idDir) {
+			userFiles = fileApp.getFolderItems(idDir, username)
+		} else {
+			userFiles = fileApp.getFolderItems(upload_dir + '/' + username, username)
+		}
+
 		if (req.method === 'POST') {
 			try {
 				if (!req.files) {
@@ -88,7 +95,6 @@ class UserController {
 				} else {
 					const filesList = Object.values(req.files);
 					const fileSize = filesList[0].size
-					console.log((fileApp.UsedMemory + fileSize) < fileApp.AllMemory)
 					if ((fileApp.UsedMemory + fileSize) < fileApp.AllMemory) {
 						fileApp.addFiles(filesList, username)
 						userFiles = fileApp.getFolderItems(upload_dir + '/' + username, username)
@@ -100,6 +106,7 @@ class UserController {
 				res.status(500).json({success: false, message: 'Server error'});
 			}
 		}
+
 		res.render('pages/home.hbs', {
 			success,
 			username: username,
@@ -113,6 +120,14 @@ class UserController {
 		const {username} = req.params;
 		const userFiles = fileApp.getFolderItems(upload_dir + '/' + username, username)
 		res.json({userFiles, memory: fileApp.getMemory(userFiles)})
+	}
+	getUserDirItemsJson(req, res) {
+		const {username} = req.params;
+		const {idDir} = req.query;
+		if (idDir) {
+			const userFiles = fileApp.getFolderItems(idDir, username)
+			res.json({userFiles, parentDir: idDir, memory: fileApp.getMemory(userFiles)})
+		}
 	}
 }
 

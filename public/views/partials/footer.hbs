@@ -1,20 +1,6 @@
 </div>
 <script src="/scripts/front.js"></script>
-<script type="text/template" class="tableBody">
-
-    ${ data.isDir
-        ? `<tr data-id="${data.id}" data-items-length="${data.items.length}" data-type="dir">`
-        : `<tr data-id="${data.id}" data-is-img="${data.isImg}" data-src="${data.src}" data-type="file">`
-    }
-        <td data-name>${data.name}</td>
-        ${ data.isDir
-            ? `<td>Directory</td>`
-            : `<td>File</td>`
-        }
-        <td data-size>${data.size}</td>
-        <td data-created>${data.birthtime}</td>
-    </tr>
-</script>
+{{> tableBody }}
 <script type="text/template" class="freeSpaceTemplate">
     <p>Free memory ${data.freeMemory} of ${data.allMemory}</p>
 </script>

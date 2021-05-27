@@ -21,16 +21,17 @@ document.addEventListener('DOMContentLoaded', () => {
 		memoryWrap.innerHTML = listRender(memory);
 	}
 
-	const renderTableBody = (userFiles, dir = false, up = false) => {
+	const renderTableBody = (userFiles, dir = '', up = false) => {
 		tableBody.innerHTML = '';
 		let listRender = makeRender('.tableBody');
 		let template = userFiles.map((data) => listRender(data))
 		if (up) {
 			stateInner.slice(0, -1)
 		}
-		if (dir) {
+		if (dir.length) {
+			console.log(111)
 			let templateDirUp = `
-				<tr data-up>
+				<tr data-up data-dir="${dir}">
 					<td colspan="4">...</td>
 				</tr>
 			`;
@@ -45,13 +46,11 @@ document.addEventListener('DOMContentLoaded', () => {
 		infoImg.innerHTML = '';
 		infoDownload.innerHTML = '';
 		if ('true' === isImg) {
-			console.log(isImg)
 			let imgTag = document.createElement('img');
 			imgTag.src = imgSrc
 			imgTag.alt = 'image'
 			infoImg.append(imgTag)
 		}
-		console.log(options)
 		if (imgSrc){
 			let downloadLink = document.createElement('a');
 			downloadLink.href = imgSrc
@@ -65,8 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	const getRequest = async (url) => {
 		let res = await fetch(url)
 		if (!res.ok) throw new Error('Error - ' + res.status);
-		const response = await res.json()
-		return await response;
+		return await res.json();
 	}
 
 	const renderDirItems = (idDir) => {
@@ -81,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		// renderTableBody(userFiles);
 		state = userFiles;
 		stateInner.push(state);
-		renderFileSystemMemory(memory);
+		// renderFileSystemMemory(memory);
 	})
 
 	table.addEventListener('dblclick',e => {
@@ -89,44 +87,49 @@ document.addEventListener('DOMContentLoaded', () => {
 		let elem;
 		if (e.target.closest('[data-type="dir"]')) {
 			elem = e.target.closest('[data-type="dir"]');
-			idDir = elem.getAttribute('data-id');
-			renderDirItems(idDir)
+			let dirUrl = elem.getAttribute('data-dir');
+			let dirName = elem.querySelector('[data-name]').textContent;
+			getRequest(`http://localhost:3010/user/dchaika-file/?idDir=${dirUrl}/${dirName}`).then(({userFiles, memory, parentDir})=>{
+				renderTableBody(userFiles, parentDir);
+				renderFileSystemMemory(memory);
+			})
 		}
 		if (e.target.closest('[data-up]')) {
-			stateInner = stateInner.slice(0, -1)
-			let dir = true;
-			if (stateInner.length === 1) {
-				dir = false
-			}
-			renderTableBody(stateInner[stateInner.length - 1], dir, true)
+			elem = e.target.closest('[data-up]');
+			let dirUrl = elem.getAttribute('data-dir');
+			let parentUrl = dirUrl.slice(0, dirUrl.lastIndexOf('/'))
+			getRequest(`http://localhost:3010/user/dchaika-file/?idDir=${parentUrl}`).then(({userFiles, memory, parentDir})=>{
+				renderTableBody(userFiles, parentDir);
+				renderFileSystemMemory(memory);
+			})
 		}
 	})
 
-	// table.addEventListener('click', e => {
-	// 	e.stopPropagation();
-	// 	let elem;
-	// 	if (e.target.closest('[data-type]')) {
-	// 		elem = e.target.closest('[data-type]');
-	// 		let options = [
-	// 			{name: 'Name', value: elem.querySelector('[data-name]').textContent},
-	// 			{name: 'Size', value: elem.querySelector('[data-size]').textContent},
-	// 			{name: 'Created', value: elem.querySelector('[data-created]').textContent},
-	// 		]
-	// 		if (elem.hasAttribute('data-items-length')) {
-	// 			options.push({
-	// 				name: 'Files count',
-	// 				value: elem.getAttribute('data-items-length')
-	// 			})
-	// 		}
-	// 		let path;
-	// 		if (elem.hasAttribute('data-src')) {
-	// 			path = elem.getAttribute('data-src');
-	// 		}
-	// 		let isImg;
-	// 		if (elem.hasAttribute('data-is-img')) {
-	// 			isImg = elem.getAttribute('data-is-img');
-	// 		}
-	// 		renderInfo(options, path, isImg)
-	// 	}
-	// })
+	table.addEventListener('click', e => {
+		e.stopPropagation();
+		let elem;
+		if (e.target.closest('[data-type]')) {
+			elem = e.target.closest('[data-type]');
+			let options = [
+				{name: 'Name', value: elem.querySelector('[data-name]').textContent},
+				{name: 'Size', value: elem.querySelector('[data-size]').textContent},
+				{name: 'Created', value: elem.querySelector('[data-created]').textContent},
+			]
+			if (elem.hasAttribute('data-items-length')) {
+				options.push({
+					name: 'Files count',
+					value: elem.getAttribute('data-items-length')
+				})
+			}
+			let path;
+			if (elem.hasAttribute('data-src')) {
+				path = elem.getAttribute('data-src');
+			}
+			let isImg;
+			if (elem.hasAttribute('data-is-img')) {
+				isImg = elem.getAttribute('data-is-img');
+			}
+			renderInfo(options, path, isImg)
+		}
+	})
 })

@@ -1,0 +1,15 @@
+<script type="text/template" class="tableBody">
+
+    ${ data.isDir
+    ? `<tr data-id="${data.id}" data-items-length="${data.items.length}" data-dir="${data.dir}" data-type="dir">`
+        : `<tr data-id="${data.id}" data-is-img="${data.isImg}" data-src="${data.src}" data-type="file">`
+        }
+        <td data-name>${data.name}</td>
+        ${ data.isDir
+        ? `<td>Directory</td>`
+        : `<td>File</td>`
+        }
+        <td data-size>${data.size}</td>
+        <td data-created>${data.birthtime}</td>
+    </tr>
+</script>
