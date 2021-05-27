@@ -19,14 +19,32 @@
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Type</th>
-                                    <th>Size</th>
-                                    <th>Created</th>
-                                </tr>
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Size</th>
+                                <th>Created</th>
+                            </tr>
                             </thead>
                             <tbody>
+                            {{#if userFilesCount}}
+                                {{#each userFiles}}
+                                    <tr data-id="{{this.id}}"
+                                        {{#if this.isDir}}data-type="dir" {{else}}data-type="file"{{/if}}>
+                                        <td>{{this.name}}</td>
+                                        {{#if this.isDir}}
+                                            <td>Directory</td>
+                                        {{else}}
+                                            <td>File</td>
+                                        {{/if}}
+                                        <td>{{this.size}}</td>
+                                        <td>{{this.birthtime}}</td>
+
+                                    </tr>
+                                {{/each }}
+                            {{else}}
+                                <p>There are no files</p>
+                            {{/if}}
                             </tbody>
                         </table>
                     </div>
@@ -41,7 +59,6 @@
                 <div class="information">
                     <h3>Information</h3>
                     <div class="information-media">
-<!--                        <img src="" alt="">-->
                     </div>
                     <div class="information-content">
                         <ul>
@@ -60,7 +77,6 @@
                         </ul>
                     </div>
                     <div class="information-download">
-<!--                        <a href="path_to_file" download="proposed_file_name">Download</a>-->
                     </div>
                 </div>
             </aside>

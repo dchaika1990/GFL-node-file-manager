@@ -76,8 +76,8 @@ class UserController {
 
 	getUserItems(req, res) {
 		const {username} = req.params;
-		const userFiles = fileApp.getFolderItems(upload_dir + '/' + username, username)
-
+		let userFiles = fileApp.getFolderItems(upload_dir + '/' + username, username)
+		let success = '';
 		if (req.method === 'POST') {
 			try {
 				if (!req.files) {
@@ -88,23 +88,20 @@ class UserController {
 				} else {
 					const filesList = Object.values(req.files);
 					const fileSize = filesList[0].size
+					console.log((fileApp.UsedMemory + fileSize) < fileApp.AllMemory)
 					if ((fileApp.UsedMemory + fileSize) < fileApp.AllMemory) {
 						fileApp.addFiles(filesList, username)
+						userFiles = fileApp.getFolderItems(upload_dir + '/' + username, username)
 					} else {
-						res.render('pages/home.hbs', {
-							success: 'Not Enough Memory',
-							username: username,
-							userFilesCount: userFiles.length,
-							userFiles: userFiles
-						})
+						success = 'Not Enough Memory'
 					}
 				}
 			} catch (err) {
 				res.status(500).json({success: false, message: 'Server error'});
 			}
 		}
-
 		res.render('pages/home.hbs', {
+			success,
 			username: username,
 			userFilesCount: userFiles.length,
 			userFiles: userFiles,

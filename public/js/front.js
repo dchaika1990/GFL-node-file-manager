@@ -74,11 +74,11 @@ document.addEventListener('DOMContentLoaded', () => {
 			return  obj.id === +idDir
 		})
 		stateInner.push(dirItems[0].items)
-		renderTableBody(dirItems[0].items, true)
+		// renderTableBody(dirItems[0].items, true)
 	}
 
 	getRequest(`http://localhost:3010${username}-file/`).then(({userFiles, memory}) => {
-		renderTableBody(userFiles);
+		// renderTableBody(userFiles);
 		state = userFiles;
 		stateInner.push(state);
 		renderFileSystemMemory(memory);
@@ -102,31 +102,31 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 	})
 
-	table.addEventListener('click', e => {
-		e.stopPropagation();
-		let elem;
-		if (e.target.closest('[data-type]')) {
-			elem = e.target.closest('[data-type]');
-			let options = [
-				{name: 'Name', value: elem.querySelector('[data-name]').textContent},
-				{name: 'Size', value: elem.querySelector('[data-size]').textContent},
-				{name: 'Created', value: elem.querySelector('[data-created]').textContent},
-			]
-			if (elem.hasAttribute('data-items-length')) {
-				options.push({
-					name: 'Files count',
-					value: elem.getAttribute('data-items-length')
-				})
-			}
-			let path;
-			if (elem.hasAttribute('data-src')) {
-				path = elem.getAttribute('data-src');
-			}
-			let isImg;
-			if (elem.hasAttribute('data-is-img')) {
-				isImg = elem.getAttribute('data-is-img');
-			}
-			renderInfo(options, path, isImg)
-		}
-	})
+	// table.addEventListener('click', e => {
+	// 	e.stopPropagation();
+	// 	let elem;
+	// 	if (e.target.closest('[data-type]')) {
+	// 		elem = e.target.closest('[data-type]');
+	// 		let options = [
+	// 			{name: 'Name', value: elem.querySelector('[data-name]').textContent},
+	// 			{name: 'Size', value: elem.querySelector('[data-size]').textContent},
+	// 			{name: 'Created', value: elem.querySelector('[data-created]').textContent},
+	// 		]
+	// 		if (elem.hasAttribute('data-items-length')) {
+	// 			options.push({
+	// 				name: 'Files count',
+	// 				value: elem.getAttribute('data-items-length')
+	// 			})
+	// 		}
+	// 		let path;
+	// 		if (elem.hasAttribute('data-src')) {
+	// 			path = elem.getAttribute('data-src');
+	// 		}
+	// 		let isImg;
+	// 		if (elem.hasAttribute('data-is-img')) {
+	// 			isImg = elem.getAttribute('data-is-img');
+	// 		}
+	// 		renderInfo(options, path, isImg)
+	// 	}
+	// })
 })
