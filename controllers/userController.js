@@ -95,10 +95,11 @@ class UserController {
 	getUserDirItemsJson(req, res) {
 		const {username} = req.params;
 		const {idDir = `uploads/${username}`} = req.query;
+		let allUserFiles = fileApp.getFolderItems(upload_dir + '/' + username)
 		let userFiles
 		if (idDir) {
 			userFiles = fileApp.getFolderItems(idDir)
-			res.json({userFiles, parentDir: idDir, memory: fileApp.getMemory(userFiles)})
+			res.json({userFiles, parentDir: idDir, memory: fileApp.getMemory(allUserFiles)})
 		}
 		if (req.method === 'POST') {
 			try {

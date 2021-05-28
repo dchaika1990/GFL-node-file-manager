@@ -12,11 +12,26 @@ class FileApp {
 	}
 
 	__getFolderSize(dirTree) {
-		let size = 0;
-		dirTree.forEach(item => {
-			size += item.sizeBytes
-		})
-		return size;
+		// let size = 0;
+		// dirTree.forEach(item => {
+		// 	size += item.sizeBytes
+		// })
+		// return size;
+
+		const dirItems = Object.keys(dirTree);
+		let sizeBytes = 0;
+
+		dirItems.forEach(item => {
+			const itemObj = dirTree[item];
+			sizeBytes += itemObj.isFile ? itemObj.sizeBytes : this.__getFolderSize(itemObj.items);
+			if (itemObj.isDir) {
+				itemObj.sizeBytes = sizeBytes
+			}
+
+		});
+
+		return sizeBytes;
+
 	};
 
 	__formatSizeUnits(bytes) {
@@ -60,6 +75,7 @@ class FileApp {
 							basename: base,
 							dir,
 							sizeBytes: stats.size,
+							// size: stats.size,
 							size: this.__formatSizeUnits(stats.size),
 							birthtime: new Date(stats.ctime).toLocaleDateString(),
 							isFile: stats.isFile(),
@@ -71,8 +87,8 @@ class FileApp {
 							name: item,
 							basename: base,
 							dir,
-							sizeBytes: stats.size,
-							size: this.__formatSizeUnits(stats.size),
+							sizeBytes: this.__getFolderSize(this.getFolderItems(path.join(pathName, item))),
+							size: this.__formatSizeUnits(this.__getFolderSize(this.getFolderItems(path.join(pathName, item)))),
 							birthtime: new Date(stats.ctime).toLocaleDateString(),
 							isFile: stats.isFile(),
 							isDir: stats.isDirectory(),
@@ -101,7 +117,6 @@ class FileApp {
 
 	addFiles(filesList, username, idDir) {
 		filesList.forEach((file, i) => {
-			console.log(idDir + '/' + file.name)
 			file.mv(idDir + '/' + file.name, (err) => {
 					const result = {
 						id: i,
