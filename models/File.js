@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require("path");
 
 class FileApp {
-	USER_MAX_SIZE = 12428800 / 2;
+	USER_MAX_SIZE = 12428800;
 	USED_MEMORY = 0;
 
 	createUserDir(username) {
@@ -99,9 +99,10 @@ class FileApp {
 	}
 
 
-	addFiles(filesList, username) {
+	addFiles(filesList, username, idDir) {
 		filesList.forEach((file, i) => {
-			file.mv(upload_dir + `/${username}/` + file.name, (err) => {
+			console.log(idDir + '/' + file.name)
+			file.mv(idDir + '/' + file.name, (err) => {
 					const result = {
 						id: i,
 						name: file.name,

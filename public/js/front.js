@@ -9,6 +9,9 @@ document.addEventListener('DOMContentLoaded', () => {
 	let state = [];
 	let stateInner = [];
 	let idDir;
+	let formUpload = document.getElementById('upload-form')
+	let dirUrl = `uploads/${username}`;
+	let dirName = '';
 
 	function getCookie(name) {
 		let matches = document.cookie.match(new RegExp(
@@ -35,9 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		if (up) {
 			stateInner.slice(0, -1)
 		}
-		if (dir.length && dir !== `uploads/${username}`) {
-			console.log(`uploads/${username}`)
-			console.log(dir)
+		if (dir.length && dir !== `uploads/${username}` && dir !== `uploads/${username}/`) {
 			let templateDirUp = `
 				<tr data-up data-dir="${dir}">
 					<td colspan="4">...</td>
@@ -59,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			imgTag.alt = 'image'
 			infoImg.append(imgTag)
 		}
-		if (imgSrc){
+		if (imgSrc) {
 			let downloadLink = document.createElement('a');
 			downloadLink.href = imgSrc
 			downloadLink.download = options[0].value
@@ -75,39 +76,48 @@ document.addEventListener('DOMContentLoaded', () => {
 		return await res.json();
 	}
 
-	const renderDirItems = (idDir) => {
-		let dirItems = stateInner[stateInner.length - 1].filter(obj =>{
-			return  obj.id === +idDir
-		})
-		stateInner.push(dirItems[0].items)
-		// renderTableBody(dirItems[0].items, true)
+	function postRequest(url, data) {
+		// const res = await fetch(`${url}`, {
+		// 	method: 'post',
+		// 	headers: {
+		// 	    'Content-type': 'application/json; charset=utf-8'
+		// 	},
+		// 	body: JSON.stringify(data)
+		// 	// body: data
+		// });
+		// console.log(data)
+		// if (!res.ok) {
+		// 	throw new Error(`Could not fetch ${url}, status: ${res.status}`)
+		// }
+		// return await res.json();
+		// return await res.text();
+
+
 	}
 
-	// getRequest(`http://localhost:3010${username}-file/`).then(({userFiles, memory}) => {
-	// 	// renderTableBody(userFiles);
-	// 	state = userFiles;
-	// 	stateInner.push(state);
-	// 	// renderFileSystemMemory(memory);
-	// })
-
 	if (table) {
-		table.addEventListener('dblclick',e => {
+		table.addEventListener('dblclick', e => {
 			e.stopPropagation()
 			let elem;
 			if (e.target.closest('[data-type="dir"]')) {
 				elem = e.target.closest('[data-type="dir"]');
-				let dirUrl = elem.getAttribute('data-dir');
-				let dirName = elem.querySelector('[data-name]').textContent;
-				getRequest(`http://localhost:3010/user/dchaika-file/?idDir=${dirUrl}/${dirName}`).then(({userFiles, memory, parentDir})=>{
+				dirUrl = elem.getAttribute('data-dir');
+				dirName = elem.querySelector('[data-name]').textContent;
+				dirUrl = elem.getAttribute('data-dir') + '/' + elem.querySelector('[data-name]').textContent
+				getRequest(`http://localhost:3010/user/${username}-file/?idDir=${dirUrl}`).
+				then(({userFiles, memory, parentDir
+				}) => {
 					renderTableBody(userFiles, parentDir);
 					renderFileSystemMemory(memory);
 				})
 			}
 			if (e.target.closest('[data-up]')) {
 				elem = e.target.closest('[data-up]');
-				let dirUrl = elem.getAttribute('data-dir');
-				let parentUrl = dirUrl.slice(0, dirUrl.lastIndexOf('/'))
-				getRequest(`http://localhost:3010/user/dchaika-file/?idDir=${parentUrl}`).then(({userFiles, memory, parentDir})=>{
+				let parentUrl = elem.getAttribute('data-dir');
+				dirUrl = parentUrl.slice(0, dirUrl.lastIndexOf('/'))
+				getRequest(`http://localhost:3010/user/${username}-file/?idDir=${dirUrl}`)
+					.then(({userFiles, memory, parentDir
+				}) => {
 					renderTableBody(userFiles, parentDir);
 					renderFileSystemMemory(memory);
 				})
@@ -140,6 +150,31 @@ document.addEventListener('DOMContentLoaded', () => {
 				}
 				renderInfo(options, path, isImg)
 			}
+		})
+	}
+
+	if (formUpload) {
+		formUpload.addEventListener('submit', (e) => {
+			e.preventDefault();
+			let input = formUpload.querySelector('[type="file"]')
+			let file = input.files[0]
+			const formData = new FormData()
+			formData.append('myFile', file)
+			fetch(`http://localhost:3010/user/${username}-file/?idDir=${dirUrl}`, {
+				method: 'POST',
+				body: formData
+			})
+				.then(response => response.json())
+				.then(data => {
+					getRequest(`http://localhost:3010/user/${username}-file/?idDir=${dirUrl}`).
+					then(({userFiles, memory, parentDir}) => {
+						renderTableBody(userFiles, parentDir);
+						renderFileSystemMemory(memory);
+					})
+				})
+				.catch(error => {
+					console.error(error)
+				})
 		})
 	}
 })

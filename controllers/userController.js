@@ -82,12 +82,53 @@ class UserController {
 		const {idDir} = req.query;
 		let userFiles;
 		let success = '';
-		if (idDir) {
-			userFiles = fileApp.getFolderItems(idDir, username)
-		} else {
-			userFiles = fileApp.getFolderItems(upload_dir + '/' + username, username)
-		}
+		// if (idDir) {
+		// 	userFiles = fileApp.getFolderItems(idDir, username)
+		// } else {
+			userFiles = fileApp.getFolderItems(upload_dir + '/' + username)
+		// }
 
+		// if (req.method === 'POST') {
+		//
+		// 	try {
+		// 		if (!req.files) {
+		// 			res.json({
+		// 				success: false,
+		// 				message: 'No file uploaded',
+		// 			});
+		// 		} else {
+		// 			console.log(req)
+		// 			const filesList = Object.values(req.files);
+		// 			const fileSize = filesList[0].size
+		// 			if ((fileApp.UsedMemory + fileSize) < fileApp.AllMemory) {
+		// 				fileApp.addFiles(filesList, username)
+		// 				userFiles = fileApp.getFolderItems(upload_dir + '/' + username, username)
+		// 			} else {
+		// 				success = 'Not Enough Memory'
+		// 			}
+		// 		}
+		// 	} catch (err) {
+		// 		res.status(500).json({success: false, message: 'Server error'});
+		// 	}
+		// }
+
+		res.render('pages/home.hbs', {
+			success,
+			username: username,
+			userFilesCount: userFiles.length,
+			userFiles: userFiles,
+			memory: fileApp.getMemory(userFiles).usedMemory
+		})
+	}
+
+	getUserDirItemsJson(req, res) {
+		const {username} = req.params;
+		const {idDir = 'uploads/dchaika'} = req.query;
+		let userFiles
+		if (idDir) {
+			userFiles = fileApp.getFolderItems(idDir)
+			res.json({userFiles, parentDir: idDir, memory: fileApp.getMemory(userFiles)})
+		}
 		if (req.method === 'POST') {
 			try {
 				if (!req.files) {
@@ -99,37 +140,14 @@ class UserController {
 					const filesList = Object.values(req.files);
 					const fileSize = filesList[0].size
 					if ((fileApp.UsedMemory + fileSize) < fileApp.AllMemory) {
-						fileApp.addFiles(filesList, username)
-						userFiles = fileApp.getFolderItems(upload_dir + '/' + username, username)
+						fileApp.addFiles(filesList, username, idDir)
 					} else {
-						success = 'Not Enough Memory'
+						res.json({success: false, message: 'Not Enough Memory'});
 					}
 				}
 			} catch (err) {
 				res.status(500).json({success: false, message: 'Server error'});
 			}
-		}
-
-		res.render('pages/home.hbs', {
-			success,
-			username: username,
-			userFilesCount: userFiles.length,
-			userFiles: userFiles,
-			memory: fileApp.getMemory(userFiles).usedMemory
-		})
-	}
-
-	getUserItemsJson(req, res) {
-		const {username} = req.params;
-		const userFiles = fileApp.getFolderItems(upload_dir + '/' + username, username)
-		res.json({userFiles, memory: fileApp.getMemory(userFiles)})
-	}
-	getUserDirItemsJson(req, res) {
-		const {username} = req.params;
-		const {idDir} = req.query;
-		if (idDir) {
-			const userFiles = fileApp.getFolderItems(idDir, username)
-			res.json({userFiles, parentDir: idDir, memory: fileApp.getMemory(userFiles)})
 		}
 	}
 }

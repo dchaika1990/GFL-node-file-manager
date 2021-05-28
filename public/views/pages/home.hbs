@@ -6,7 +6,7 @@
         <div class="row">
             <main class="col-lg-8">
                 <h1>Home page</h1>
-                <form action="/user/{{username}}" method="post" enctype="multipart/form-data">
+                <form id="upload-form" action="/user/{{username}}-file" method="post" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="file">File input</label>
                         <input type="file" id="file" name="file[0]">
