@@ -6,13 +6,12 @@ document.addEventListener('DOMContentLoaded', () => {
 	let infoUl = document.querySelector('.information-content ul');
 	let infoImg = document.querySelector('.information-media');
 	let infoDownload = document.querySelector('.information-download');
-	let state = [];
 	let stateInner = [];
-	let idDir;
 	let formUpload = document.getElementById('upload-form')
 	let addFolder = document.getElementById('add-folder')
 	let dirUrl = `uploads/${username}`;
 	let dirName = '';
+	let searchInput =  document.querySelector('.search')
 
 	function getCookie(name) {
 		let matches = document.cookie.match(new RegExp(
@@ -48,6 +47,8 @@ document.addEventListener('DOMContentLoaded', () => {
 			template = [templateDirUp, ...template]
 		}
 		tableBody.innerHTML = (template.join(''))
+		console.log('renderTableBody')
+		showSearch();
 	}
 
 	const renderInfo = (options, imgSrc = '', isImg = false) => {
@@ -175,6 +176,26 @@ document.addEventListener('DOMContentLoaded', () => {
 		})
 	}
 
+	function displayRows (input, rows) {
+		let searchValue = input.value.toLowerCase().trimLeft();
+		console.log(searchValue)
+		rows.forEach( row => {
+			[...row.querySelectorAll('[data-name]')]
+				.some( value => value.textContent.toLowerCase().trimLeft().indexOf(searchValue) > -1 )
+				? row.style.display = 'table-row'
+				: row.style.display = 'none'
+		} )
+	}
+
+	const showSearch = () => {
+		let rows = document.querySelectorAll('tbody tr');
+		if (searchInput.value.toLowerCase().length > 0) displayRows(searchInput, rows);
+		searchInput.addEventListener('keyup', () => {
+			console.log(1111)
+			displayRows(searchInput, rows)
+		})
+	}
+
 	if (formUpload) {
 		formUpload.addEventListener('submit', (e) => {
 			e.preventDefault();
@@ -200,4 +221,6 @@ document.addEventListener('DOMContentLoaded', () => {
 				})
 		})
 	}
+
+	showSearch();
 })

@@ -5,7 +5,8 @@
     <div class="container">
         <div class="row">
             <main class="col-lg-8">
-                <h1>Home page</h1>
+                <input placeholder="Search" type="text" class="search">
+                <hr>
                 <form id="upload-form" action="/user/{{username}}-file" method="post" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="file">File input</label>
@@ -13,6 +14,7 @@
                     </div>
                     <button type='submit' class='btn btn-success'>Upload</button>
                 </form>
+                <hr>
                 <form id="add-folder" action="/user/{{username}}-file" method="post" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="file">Add folder</label>
@@ -23,6 +25,7 @@
 
                 <p>{{success}}</p>
                 {{#if userFilesCount}}
+                    <hr>
                     <div class="table-responsive">
                         <table class="table">
                             <thead>

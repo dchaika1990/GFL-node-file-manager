@@ -70,3 +70,7 @@ img{
   max-width: 100%;
   height: auto;
 }
+
+[data-up]{
+  display: table-row!important;
+}
