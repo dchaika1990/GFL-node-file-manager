@@ -12,15 +12,8 @@ class FileApp {
 	}
 
 	__getFolderSize(dirTree) {
-		// let size = 0;
-		// dirTree.forEach(item => {
-		// 	size += item.sizeBytes
-		// })
-		// return size;
-
 		const dirItems = Object.keys(dirTree);
 		let sizeBytes = 0;
-
 		dirItems.forEach(item => {
 			const itemObj = dirTree[item];
 			sizeBytes += itemObj.isFile ? itemObj.sizeBytes : this.__getFolderSize(itemObj.items);
@@ -29,9 +22,7 @@ class FileApp {
 			}
 
 		});
-
 		return sizeBytes;
-
 	};
 
 	__formatSizeUnits(bytes) {

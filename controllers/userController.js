@@ -31,7 +31,7 @@ class UserController {
 					});
 					res.cookie('username', username);
 					fileApp.createUserDir(username)
-					res.redirect('/user/' + username);
+					res.redirect('/');
 				});
 			}
 		});
@@ -54,7 +54,7 @@ class UserController {
 				httpOnly: true,
 			});
 			res.cookie('username', username);
-			res.redirect('/user/' + username);
+			res.redirect('/');
 		});
 	}
 
@@ -69,8 +69,8 @@ class UserController {
 			const {url} = req;
 
 			if (isValid) next();
-			else if (url !== '/user/login' && url !== '/user/create') {
-				res.redirect('/user/login');
+			else if (url !== '/login' && url !== '/create') {
+				res.redirect('/login');
 			} else {
 				next();
 			}
@@ -88,7 +88,8 @@ class UserController {
 			userFilesCount: userFiles.length,
 			userFiles: userFiles,
 			memory: fileApp.getMemory(userFiles).freeMemory,
-			allMemory: fileApp.getMemory(userFiles).allMemory
+			allMemory: fileApp.getMemory(userFiles).allMemory,
+			usedMemory: fileApp.getMemory(userFiles).usedMemory
 		})
 	}
 

@@ -47,7 +47,6 @@ document.addEventListener('DOMContentLoaded', () => {
 			template = [templateDirUp, ...template]
 		}
 		tableBody.innerHTML = (template.join(''))
-		console.log('renderTableBody')
 		showSearch();
 	}
 
@@ -106,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				dirUrl = elem.getAttribute('data-dir');
 				dirName = elem.querySelector('[data-name]').textContent;
 				dirUrl = elem.getAttribute('data-dir') + '/' + elem.querySelector('[data-name]').textContent
-				getRequest(`http://localhost:3010/user/${username}-file/?idDir=${dirUrl}`).
+				getRequest(`http://localhost:3010/${username}-file/?idDir=${dirUrl}`).
 				then(({userFiles, memory, parentDir
 				}) => {
 					renderTableBody(userFiles, parentDir);
@@ -117,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				elem = e.target.closest('[data-up]');
 				let parentUrl = elem.getAttribute('data-dir');
 				dirUrl = parentUrl.slice(0, dirUrl.lastIndexOf('/'))
-				getRequest(`http://localhost:3010/user/${username}-file/?idDir=${dirUrl}`)
+				getRequest(`http://localhost:3010/${username}-file/?idDir=${dirUrl}`)
 					.then(({userFiles, memory, parentDir
 				}) => {
 					renderTableBody(userFiles, parentDir);
@@ -162,12 +161,12 @@ document.addEventListener('DOMContentLoaded', () => {
 			let nameDir = input.value;
 			const formData = new FormData()
 			formData.append('nameDir', nameDir)
-			fetch(`http://localhost:3010/user/${username}-file/?idDir=${dirUrl}`, {
+			fetch(`http://localhost:3010/${username}-file/?idDir=${dirUrl}`, {
 				method: 'POST',
 				body: formData
 			}).then(data => {
 				input.value = ''
-				getRequest(`http://localhost:3010/user/${username}-file/?idDir=${dirUrl}`).
+				getRequest(`http://localhost:3010/${username}-file/?idDir=${dirUrl}`).
 				then(({userFiles, memory, parentDir}) => {
 					renderTableBody(userFiles, parentDir);
 					renderFileSystemMemory(memory);
@@ -189,11 +188,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	const showSearch = () => {
 		let rows = document.querySelectorAll('tbody tr');
-		if (searchInput.value.toLowerCase().length > 0) displayRows(searchInput, rows);
-		searchInput.addEventListener('keyup', () => {
-			console.log(1111)
-			displayRows(searchInput, rows)
-		})
+		if (searchInput) {
+			if (searchInput.value.toLowerCase().length > 0) displayRows(searchInput, rows);
+			searchInput.addEventListener('keyup', () => {
+				console.log(1111)
+				displayRows(searchInput, rows)
+			})
+		}
 	}
 
 	if (formUpload) {
@@ -203,14 +204,14 @@ document.addEventListener('DOMContentLoaded', () => {
 			let file = input.files[0]
 			const formData = new FormData()
 			formData.append('myFile', file)
-			fetch(`http://localhost:3010/user/${username}-file/?idDir=${dirUrl}`, {
+			fetch(`http://localhost:3010/${username}-file/?idDir=${dirUrl}`, {
 				method: 'POST',
 				body: formData
 			})
 				.then(response => response.json())
 				.then(data => {
 					input.value = ''
-					getRequest(`http://localhost:3010/user/${username}-file/?idDir=${dirUrl}`).
+					getRequest(`http://localhost:3010/${username}-file/?idDir=${dirUrl}`).
 					then(({userFiles, memory, parentDir}) => {
 						renderTableBody(userFiles, parentDir);
 						renderFileSystemMemory(memory);
