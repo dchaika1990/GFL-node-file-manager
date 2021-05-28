@@ -5,7 +5,7 @@
 
 {{#if erroMessage}} <p class="">{{erroMessage}}</p> {{/if}}
 
-<form method="POST" action="/login">
+<form method="POST" action="/user/login">
   <div class='form-group {{#if login}}has-error{{/if}}'>
     <label for='username'>Username *</label>
     <input type='text' name="username" class='form-control' id='username' placeholder='Username' />

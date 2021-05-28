@@ -29,8 +29,11 @@ class UserController {
 					res.cookie('token', msg, {
 						httpOnly: true,
 					});
+					res.cookie('username', username, {
+						httpOnly: true,
+					});
 					fileApp.createUserDir(username)
-					res.redirect('/' + username);
+					res.redirect('/user/' + username);
 				});
 			}
 		});
@@ -52,12 +55,16 @@ class UserController {
 			res.cookie('token', msg, {
 				httpOnly: true,
 			});
-			res.redirect('/' + username);
+			res.cookie('username', username, {
+				httpOnly: true,
+			});
+			res.redirect('/user/' + username);
 		});
 	}
 
 	logout(req, res) {
 		res.clearCookie('token');
+		res.clearCookie('username');
 		res.redirect('/');
 	}
 
