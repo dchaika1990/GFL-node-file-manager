@@ -1,7 +1,6 @@
 const userModel = require('../models/userModel');
 const fileApp = require('../models/File');
 
-
 class UserController {
 	register(req, res) {
 		const {
@@ -79,51 +78,22 @@ class UserController {
 
 	getUserItems(req, res) {
 		const {username} = req.params;
-		const {idDir} = req.query;
-		let userFiles;
+		let userFiles = fileApp.getFolderItems(upload_dir + '/' + username)
 		let success = '';
-		// if (idDir) {
-		// 	userFiles = fileApp.getFolderItems(idDir, username)
-		// } else {
-			userFiles = fileApp.getFolderItems(upload_dir + '/' + username)
-		// }
-
-		// if (req.method === 'POST') {
-		//
-		// 	try {
-		// 		if (!req.files) {
-		// 			res.json({
-		// 				success: false,
-		// 				message: 'No file uploaded',
-		// 			});
-		// 		} else {
-		// 			console.log(req)
-		// 			const filesList = Object.values(req.files);
-		// 			const fileSize = filesList[0].size
-		// 			if ((fileApp.UsedMemory + fileSize) < fileApp.AllMemory) {
-		// 				fileApp.addFiles(filesList, username)
-		// 				userFiles = fileApp.getFolderItems(upload_dir + '/' + username, username)
-		// 			} else {
-		// 				success = 'Not Enough Memory'
-		// 			}
-		// 		}
-		// 	} catch (err) {
-		// 		res.status(500).json({success: false, message: 'Server error'});
-		// 	}
-		// }
 
 		res.render('pages/home.hbs', {
 			success,
 			username: username,
 			userFilesCount: userFiles.length,
 			userFiles: userFiles,
-			memory: fileApp.getMemory(userFiles).usedMemory
+			memory: fileApp.getMemory(userFiles).freeMemory,
+			allMemory: fileApp.getMemory(userFiles).allMemory
 		})
 	}
 
 	getUserDirItemsJson(req, res) {
 		const {username} = req.params;
-		const {idDir = 'uploads/dchaika'} = req.query;
+		const {idDir = `uploads/${username}`} = req.query;
 		let userFiles
 		if (idDir) {
 			userFiles = fileApp.getFolderItems(idDir)
@@ -142,7 +112,7 @@ class UserController {
 					if ((fileApp.UsedMemory + fileSize) < fileApp.AllMemory) {
 						fileApp.addFiles(filesList, username, idDir)
 					} else {
-						res.json({success: false, message: 'Not Enough Memory'});
+						// res.json({success: false, message: 'Not Enough Memory'});
 					}
 				}
 			} catch (err) {

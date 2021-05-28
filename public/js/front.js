@@ -166,6 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			})
 				.then(response => response.json())
 				.then(data => {
+					input.value = ''
 					getRequest(`http://localhost:3010/user/${username}-file/?idDir=${dirUrl}`).
 					then(({userFiles, memory, parentDir}) => {
 						renderTableBody(userFiles, parentDir);
