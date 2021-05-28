@@ -1,21 +1,23 @@
 {{> header title='Create user'}}
 
-<h1>Register new account</h1>
+<section>
+    <h1>Register new account</h1>
 
- {{#if erroMessage}} <p>{{erroMessage}}</p> {{/if}}
-<form method="POST" action="/create">
-  <div class='form-group'>
-    <label for='username'>Username</label>
-    <input type='text' name="username" class='form-control' id='username' placeholder='Email' />
-  </div>
-  <div class='form-group'>
-    <label for='password'>Password</label>
-    <input type='password' name="password" class='form-control' id='password' placeholder='Password' />
-  </div>
+    {{#if erroMessage}} <p>{{erroMessage}}</p> {{/if}}
+    <form method="POST" action="/create">
+        <div class='form-group'>
+            <label for='username'>Username</label>
+            <input type='text' name="username" class='form-control' id='username' placeholder='Email'/>
+        </div>
+        <div class='form-group'>
+            <label for='password'>Password</label>
+            <input type='password' name="password" class='form-control' id='password' placeholder='Password'/>
+        </div>
 
-  <button type='submit' class='btn btn-default'>Create</button>
-</form>
-<br>
-<p>Already have an account? <a href="/login">Login</a></p>
+        <button type='submit' class='btn btn-success'>Create</button>
+    </form>
+    <br>
+    <p>Already have an account? <a class="btn btn-info" href="/login">Login</a></p>
+</section>
 
 {{> footer}}

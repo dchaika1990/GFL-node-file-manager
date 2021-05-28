@@ -3,24 +3,29 @@
 
 <section>
     <div class="row">
+        <div class="col">
+            <div class="form-group">
+                <input class="form-control search" placeholder="Search" type="text">
+            </div>
+        </div>
+    </div>
+    <div class="row">
         <main class="col-lg-8">
             <div class="row">
                 <div class="col-lg-6">
                     <form id="upload-form" action="/user/{{username}}-file" method="post"
                           enctype="multipart/form-data">
                         <div class="form-group">
-                            <label for="file">File input</label>
-                            <input type="file" id="file" name="file[0]">
+                            <input type="file" id="file" name="file[0]" class="form-control-file">
                         </div>
-                        <button type='submit' class='btn btn-success'>Upload</button>
+                        <button type='submit' class='btn btn-success'>Upload file</button>
                     </form>
                 </div>
                 <div class="col-lg-6">
                     <form id="add-folder" action="/user/{{username}}-file" method="post"
                           enctype="multipart/form-data">
                         <div class="form-group">
-                            <label for="file">Add folder</label><br>
-                            <input type="text" name="folderName" placeholder="Folder name">
+                            <input type="text" class="form-control" name="folderName" placeholder="Folder name">
                         </div>
                         <button type='submit' class='btn btn-success'>Add folder</button>
                     </form>

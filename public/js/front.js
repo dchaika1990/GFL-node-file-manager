@@ -1,17 +1,17 @@
 document.addEventListener('DOMContentLoaded', () => {
 	const table = document.querySelector('.table')
 	const username = getCookie('username');
-	let tableBody = document.querySelector('.table tbody');
+	let tableBody = table.querySelector('tbody');
 	let memoryWrap = document.querySelector('.space');
 	let infoUl = document.querySelector('.information-content ul');
 	let infoImg = document.querySelector('.information-media');
 	let infoDownload = document.querySelector('.information-download');
-	let stateInner = [];
 	let formUpload = document.getElementById('upload-form')
 	let addFolder = document.getElementById('add-folder')
 	let dirUrl = `uploads/${username}`;
 	let dirName = '';
 	let searchInput =  document.querySelector('.search')
+	let separator = navigator.appVersion.indexOf("Win")!==-1 ? '\\' : '/';
 
 	function getCookie(name) {
 		let matches = document.cookie.match(new RegExp(
@@ -35,10 +35,11 @@ document.addEventListener('DOMContentLoaded', () => {
 		tableBody.innerHTML = '';
 		let listRender = makeRender('.tableBody');
 		let template = userFiles.map((data) => listRender(data))
-		if (up) {
-			stateInner.slice(0, -1)
-		}
-		if (dir.length && dir !== `uploads/${username}` && dir !== `uploads/${username}/`) {
+		if (dir.length
+			&& dir !== `uploads${separator}${username}`
+			&& dir !== `uploads${separator}${username}/`
+			&& dir !== `uploads/${username}`
+		) {
 			let templateDirUp = `
 				<tr data-up data-dir="${dir}">
 					<td colspan="4">...</td>
@@ -77,34 +78,14 @@ document.addEventListener('DOMContentLoaded', () => {
 		return await res.json();
 	}
 
-	function postRequest(url, data) {
-		// const res = await fetch(`${url}`, {
-		// 	method: 'post',
-		// 	headers: {
-		// 	    'Content-type': 'application/json; charset=utf-8'
-		// 	},
-		// 	body: JSON.stringify(data)
-		// 	// body: data
-		// });
-		// console.log(data)
-		// if (!res.ok) {
-		// 	throw new Error(`Could not fetch ${url}, status: ${res.status}`)
-		// }
-		// return await res.json();
-		// return await res.text();
-
-
-	}
-
 	if (table) {
 		table.addEventListener('dblclick', e => {
 			e.stopPropagation()
 			let elem;
 			if (e.target.closest('[data-type="dir"]')) {
 				elem = e.target.closest('[data-type="dir"]');
-				dirUrl = elem.getAttribute('data-dir');
 				dirName = elem.querySelector('[data-name]').textContent;
-				dirUrl = elem.getAttribute('data-dir') + '/' + elem.querySelector('[data-name]').textContent
+				dirUrl = elem.getAttribute('data-dir') + separator + elem.querySelector('[data-name]').textContent
 				getRequest(`http://localhost:3010/${username}-file/?idDir=${dirUrl}`).
 				then(({userFiles, memory, parentDir
 				}) => {
@@ -115,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			if (e.target.closest('[data-up]')) {
 				elem = e.target.closest('[data-up]');
 				let parentUrl = elem.getAttribute('data-dir');
-				dirUrl = parentUrl.slice(0, dirUrl.lastIndexOf('/'))
+				dirUrl = parentUrl.slice(0, dirUrl.lastIndexOf(separator))
 				getRequest(`http://localhost:3010/${username}-file/?idDir=${dirUrl}`)
 					.then(({userFiles, memory, parentDir
 				}) => {
@@ -159,12 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			e.preventDefault();
 			let input = addFolder.querySelector('input')
 			let nameDir = input.value;
-			const formData = new FormData()
-			formData.append('nameDir', nameDir)
-			fetch(`http://localhost:3010/${username}-file/?idDir=${dirUrl}`, {
-				method: 'POST',
-				body: formData
-			}).then(data => {
+			postRequest(`http://localhost:3010/${username}-file/?idDir=${dirUrl}`, 'nameDir', nameDir).then(data => {
 				input.value = ''
 				getRequest(`http://localhost:3010/${username}-file/?idDir=${dirUrl}`).
 				then(({userFiles, memory, parentDir}) => {
@@ -191,10 +167,18 @@ document.addEventListener('DOMContentLoaded', () => {
 		if (searchInput) {
 			if (searchInput.value.toLowerCase().length > 0) displayRows(searchInput, rows);
 			searchInput.addEventListener('keyup', () => {
-				console.log(1111)
 				displayRows(searchInput, rows)
 			})
 		}
+	}
+
+	async function postRequest(url, key, data) {
+		const formData = new FormData()
+		formData.append(key, data)
+		return await fetch(`http://localhost:3010/${username}-file/?idDir=${dirUrl}`, {
+			method: 'POST',
+			body: formData
+		});
 	}
 
 	if (formUpload) {
@@ -202,12 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			e.preventDefault();
 			let input = formUpload.querySelector('[type="file"]')
 			let file = input.files[0]
-			const formData = new FormData()
-			formData.append('myFile', file)
-			fetch(`http://localhost:3010/${username}-file/?idDir=${dirUrl}`, {
-				method: 'POST',
-				body: formData
-			})
+			postRequest(`http://localhost:3010/${username}-file/?idDir=${dirUrl}`, 'myFile', file)
 				.then(response => response.json())
 				.then(data => {
 					input.value = ''

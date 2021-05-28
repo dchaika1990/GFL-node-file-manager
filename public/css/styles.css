@@ -74,3 +74,13 @@ img{
 [data-up]{
   display: table-row!important;
 }
+
+section{
+  padding-top: 90px;
+  padding-bottom: 90px;
+}
+
+.row,
+.search{
+  width: 100%;
+}
