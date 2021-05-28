@@ -29,9 +29,7 @@ class UserController {
 					res.cookie('token', msg, {
 						httpOnly: true,
 					});
-					res.cookie('username', username, {
-						httpOnly: true,
-					});
+					res.cookie('username', username);
 					fileApp.createUserDir(username)
 					res.redirect('/user/' + username);
 				});
@@ -55,9 +53,7 @@ class UserController {
 			res.cookie('token', msg, {
 				httpOnly: true,
 			});
-			res.cookie('username', username, {
-				httpOnly: true,
-			});
+			res.cookie('username', username);
 			res.redirect('/user/' + username);
 		});
 	}

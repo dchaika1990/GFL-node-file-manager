@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
-	const username = window.location.pathname;
 	const table = document.querySelector('.table')
+	const username = getCookie('username');
 	let tableBody = document.querySelector('.table tbody');
 	let memoryWrap = document.querySelector('.space');
 	let infoUl = document.querySelector('.information-content ul');
@@ -9,6 +9,13 @@ document.addEventListener('DOMContentLoaded', () => {
 	let state = [];
 	let stateInner = [];
 	let idDir;
+
+	function getCookie(name) {
+		let matches = document.cookie.match(new RegExp(
+			"(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+		))
+		return matches ? decodeURIComponent(matches[1]) : undefined
+	}
 
 	const makeRender = (selector) => {
 		let template = document.querySelector(selector).innerHTML;
@@ -29,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			stateInner.slice(0, -1)
 		}
 		if (dir.length && dir !== `uploads/${username}`) {
-			console.log(`uploads${username}`)
+			console.log(`uploads/${username}`)
 			console.log(dir)
 			let templateDirUp = `
 				<tr data-up data-dir="${dir}">
