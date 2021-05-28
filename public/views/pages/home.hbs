@@ -7,21 +7,26 @@
             <main class="col-lg-8">
                 <input placeholder="Search" type="text" class="search">
                 <hr>
-                <form id="upload-form" action="/user/{{username}}-file" method="post" enctype="multipart/form-data">
-                    <div class="form-group">
-                        <label for="file">File input</label>
-                        <input type="file" id="file" name="file[0]">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <form id="upload-form" action="/user/{{username}}-file" method="post" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="file">File input</label>
+                                <input type="file" id="file" name="file[0]">
+                            </div>
+                            <button type='submit' class='btn btn-success'>Upload</button>
+                        </form>
                     </div>
-                    <button type='submit' class='btn btn-success'>Upload</button>
-                </form>
-                <hr>
-                <form id="add-folder" action="/user/{{username}}-file" method="post" enctype="multipart/form-data">
-                    <div class="form-group">
-                        <label for="file">Add folder</label>
-                        <input type="text" name="folderName" placeholder="Folder name">
+                    <div class="col-lg-6">
+                        <form id="add-folder" action="/user/{{username}}-file" method="post" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="file">Add folder</label><br>
+                                <input type="text" name="folderName" placeholder="Folder name">
+                            </div>
+                            <button type='submit' class='btn btn-success'>Add folder</button>
+                        </form>
                     </div>
-                    <button type='submit' class='btn btn-success'>Add folder</button>
-                </form>
+                </div>
 
                 <p>{{success}}</p>
                 {{#if userFilesCount}}
