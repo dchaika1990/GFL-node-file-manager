@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	let stateInner = [];
 	let idDir;
 	let formUpload = document.getElementById('upload-form')
+	let addFolder = document.getElementById('add-folder')
 	let dirUrl = `uploads/${username}`;
 	let dirName = '';
 
@@ -150,6 +151,27 @@ document.addEventListener('DOMContentLoaded', () => {
 				}
 				renderInfo(options, path, isImg)
 			}
+		})
+	}
+
+	if (addFolder) {
+		addFolder.addEventListener('submit', (e) => {
+			e.preventDefault();
+			let input = addFolder.querySelector('input')
+			let nameDir = input.value;
+			const formData = new FormData()
+			formData.append('nameDir', nameDir)
+			fetch(`http://localhost:3010/user/${username}-file/?idDir=${dirUrl}`, {
+				method: 'POST',
+				body: formData
+			}).then(data => {
+				input.value = ''
+				getRequest(`http://localhost:3010/user/${username}-file/?idDir=${dirUrl}`).
+				then(({userFiles, memory, parentDir}) => {
+					renderTableBody(userFiles, parentDir);
+					renderFileSystemMemory(memory);
+				})
+			})
 		})
 	}
 

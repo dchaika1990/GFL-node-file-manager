@@ -1,5 +1,6 @@
 const userModel = require('../models/userModel');
 const fileApp = require('../models/File');
+const fs = require('fs')
 
 class UserController {
 	register(req, res) {
@@ -101,22 +102,19 @@ class UserController {
 		}
 		if (req.method === 'POST') {
 			try {
-				if (!req.files) {
-					res.json({
-						success: false,
-						message: 'No file uploaded',
-					});
-				} else {
+				if(req.body.nameDir){
+					fs.mkdirSync(idDir + '/' + req.body.nameDir)
+				}
+				if (req.files) {
 					const filesList = Object.values(req.files);
 					const fileSize = filesList[0].size
 					if ((fileApp.UsedMemory + fileSize) < fileApp.AllMemory) {
 						fileApp.addFiles(filesList, username, idDir)
-					} else {
-						// res.json({success: false, message: 'Not Enough Memory'});
 					}
 				}
 			} catch (err) {
-				res.status(500).json({success: false, message: 'Server error'});
+				console.log(err)
+				// res.status(500).json({success: false, message: 'Server error'});
 			}
 		}
 	}

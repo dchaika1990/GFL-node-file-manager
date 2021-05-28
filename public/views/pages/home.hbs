@@ -11,9 +11,16 @@
                         <label for="file">File input</label>
                         <input type="file" id="file" name="file[0]">
                     </div>
-
                     <button type='submit' class='btn btn-success'>Upload</button>
                 </form>
+                <form id="add-folder" action="/user/{{username}}-file" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="file">Add folder</label>
+                        <input type="text" name="folderName" placeholder="Folder name">
+                    </div>
+                    <button type='submit' class='btn btn-success'>Add folder</button>
+                </form>
+
                 <p>{{success}}</p>
                 {{#if userFilesCount}}
                     <div class="table-responsive">
