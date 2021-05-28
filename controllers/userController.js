@@ -78,7 +78,7 @@ class UserController {
 	}
 
 	getUserItems(req, res) {
-		const {username} = req.params;
+		const {username} = req.cookies;
 		let userFiles = fileApp.getFolderItems(upload_dir + '/' + username)
 		let success = '';
 
@@ -93,7 +93,7 @@ class UserController {
 	}
 
 	getUserDirItemsJson(req, res) {
-		const {username} = req.params;
+		const {username} = req.cookies;
 		const {idDir = `uploads/${username}`} = req.query;
 		let allUserFiles = fileApp.getFolderItems(upload_dir + '/' + username)
 		let userFiles
