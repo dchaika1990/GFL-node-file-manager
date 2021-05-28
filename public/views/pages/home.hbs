@@ -9,31 +9,28 @@
             </div>
         </div>
     </div>
-    <div class="row">
-        <main class="col-lg-8">
-            <div class="row">
-                <div class="col-lg-6">
-                    <form id="upload-form" action="/user/{{username}}-file" method="post"
-                          enctype="multipart/form-data">
-                        <div class="form-group">
-                            <input type="file" id="file" name="file[0]" class="form-control-file">
-                        </div>
-                        <button type='submit' class='btn btn-success'>Upload file</button>
-                    </form>
+    <div class="row mt-5">
+        <div class="col-lg-6">
+            <form id="upload-form" action="/user/{{username}}-file" method="post"
+                  enctype="multipart/form-data">
+                <div class="form-group">
+                    <input type="file" id="file" name="file[0]" class="form-control-file">
                 </div>
-                <div class="col-lg-6">
-                    <form id="add-folder" action="/user/{{username}}-file" method="post"
-                          enctype="multipart/form-data">
-                        <div class="form-group">
-                            <input type="text" class="form-control" name="folderName" placeholder="Folder name">
-                        </div>
-                        <button type='submit' class='btn btn-success'>Add folder</button>
-                    </form>
+                <button type='submit' class='btn btn-success'>Upload file</button>
+            </form>
+        </div>
+        <div class="col-lg-6">
+            <form id="add-folder" action="/user/{{username}}-file" method="post"
+                  enctype="multipart/form-data">
+                <div class="form-group">
+                    <input type="text" class="form-control" name="folderName" placeholder="Folder name">
                 </div>
-            </div>
-
-            <p>{{success}}</p>
-            <hr>
+                <button type='submit' class='btn btn-success'>Add folder</button>
+            </form>
+        </div>
+    </div>
+    <div class="row mt-5">
+        <main class="col-lg-9">
             <div class="table-responsive">
                 <table class="table">
                     <thead>
@@ -78,7 +75,7 @@
                 <div class="space">Free memory {{memory}} of {{allMemory}}</div>
             </div>
         </main>
-        <aside class="col-lg-4">
+        <aside class="col-lg-3">
             <div class="information">
                 <h3>Information</h3>
                 <div class="information-media">

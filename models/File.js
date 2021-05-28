@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require("path");
 
 class FileApp {
-	USER_MAX_SIZE = 12428800;
+	USER_MAX_SIZE = 20000000;
 	USED_MEMORY = 0;
 
 	createUserDir(username) {
@@ -66,7 +66,6 @@ class FileApp {
 							basename: base,
 							dir,
 							sizeBytes: stats.size,
-							// size: stats.size,
 							size: this.__formatSizeUnits(stats.size),
 							birthtime: new Date(stats.ctime).toLocaleDateString(),
 							isFile: stats.isFile(),
