@@ -2,106 +2,102 @@
 
 
 <section>
-    <div class="container">
-        <div class="row">
-            <main class="col-lg-8">
-                <input placeholder="Search" type="text" class="search">
-                <hr>
-                <div class="row">
-                    <div class="col-lg-6">
-                        <form id="upload-form" action="/user/{{username}}-file" method="post"
-                              enctype="multipart/form-data">
-                            <div class="form-group">
-                                <label for="file">File input</label>
-                                <input type="file" id="file" name="file[0]">
-                            </div>
-                            <button type='submit' class='btn btn-success'>Upload</button>
-                        </form>
-                    </div>
-                    <div class="col-lg-6">
-                        <form id="add-folder" action="/user/{{username}}-file" method="post"
-                              enctype="multipart/form-data">
-                            <div class="form-group">
-                                <label for="file">Add folder</label><br>
-                                <input type="text" name="folderName" placeholder="Folder name">
-                            </div>
-                            <button type='submit' class='btn btn-success'>Add folder</button>
-                        </form>
-                    </div>
+    <div class="row">
+        <main class="col-lg-8">
+            <div class="row">
+                <div class="col-lg-6">
+                    <form id="upload-form" action="/user/{{username}}-file" method="post"
+                          enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="file">File input</label>
+                            <input type="file" id="file" name="file[0]">
+                        </div>
+                        <button type='submit' class='btn btn-success'>Upload</button>
+                    </form>
                 </div>
+                <div class="col-lg-6">
+                    <form id="add-folder" action="/user/{{username}}-file" method="post"
+                          enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="file">Add folder</label><br>
+                            <input type="text" name="folderName" placeholder="Folder name">
+                        </div>
+                        <button type='submit' class='btn btn-success'>Add folder</button>
+                    </form>
+                </div>
+            </div>
 
-                <p>{{success}}</p>
-                <hr>
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Type</th>
-                            <th>Size</th>
-                            <th>Created</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {{#if userFilesCount}}
-                            {{#each userFiles}}
-                                <tr data-id="{{this.id}}"
-                                    {{#if this.isDir}}
-                                    data-type="dir"
-                                    data-dir="{{this.dir}}"
-                                    {{else}}
-                                    data-type="file"
-                                    {{/if}}
-                                    data-is-img="{{this.isImg}}" data-src="{{this.src}}"
-                                >
-                                    <td data-name>{{this.name}}</td>
-                                    {{#if this.isDir}}
-                                        <td>Directory</td>
-                                    {{else}}
-                                        <td>File</td>
-                                    {{/if}}
-                                    <td data-size>{{this.size}}</td>
-                                    <td data-created>{{this.birthtime}}</td>
-                                </tr>
-                            {{/each }}
-                        {{else}}
-                            <tr >
-                                <td colspan="4">There are no files</td>
+            <p>{{success}}</p>
+            <hr>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Size</th>
+                        <th>Created</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {{#if userFilesCount}}
+                        {{#each userFiles}}
+                            <tr data-id="{{this.id}}"
+                                {{#if this.isDir}}
+                                data-type="dir"
+                                data-dir="{{this.dir}}"
+                                {{else}}
+                                data-type="file"
+                                {{/if}}
+                                data-is-img="{{this.isImg}}" data-src="{{this.src}}"
+                            >
+                                <td data-name>{{this.name}}</td>
+                                {{#if this.isDir}}
+                                    <td>Directory</td>
+                                {{else}}
+                                    <td>File</td>
+                                {{/if}}
+                                <td data-size>{{this.size}}</td>
+                                <td data-created>{{this.birthtime}}</td>
                             </tr>
-                        {{/if}}
-                        </tbody>
-                    </table>
+                        {{/each }}
+                    {{else}}
+                        <tr >
+                            <td colspan="4">There are no files</td>
+                        </tr>
+                    {{/if}}
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-5 mb-5">
+                <div class="space">Free memory {{memory}} of {{allMemory}}</div>
+            </div>
+        </main>
+        <aside class="col-lg-4">
+            <div class="information">
+                <h3>Information</h3>
+                <div class="information-media">
                 </div>
-                <div class="mt-5 mb-5">
-                    <div class="space">Free memory {{memory}} of {{allMemory}}</div>
+                <div class="information-content">
+                    <ul>
+                        <li>
+                            <strong class="title">Name</strong>
+                            <span class="value">{{username}}</span>
+                        </li>
+                        <li>
+                            <strong class="title">Size</strong>
+                            <span class="value">{{usedMemory}}</span>
+                        </li>
+                        <li>
+                            <strong class="title">Files count</strong>
+                            <span class="value">{{userFilesCount}}</span>
+                        </li>
+                    </ul>
                 </div>
-            </main>
-            <aside class="col-lg-4">
-                <div class="information">
-                    <h3>Information</h3>
-                    <div class="information-media">
-                    </div>
-                    <div class="information-content">
-                        <ul>
-                            <li>
-                                <strong class="title">Name</strong>
-                                <span class="value">{{username}}</span>
-                            </li>
-                            <li>
-                                <strong class="title">Size</strong>
-                                <span class="value">{{usedMemory}}</span>
-                            </li>
-                            <li>
-                                <strong class="title">Files count</strong>
-                                <span class="value">{{userFilesCount}}</span>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="information-download">
-                    </div>
+                <div class="information-download">
                 </div>
-            </aside>
-        </div>
+            </div>
+        </aside>
     </div>
 </section>
 
