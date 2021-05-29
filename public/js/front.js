@@ -56,7 +56,7 @@ const messageAlert = (wrap, message) => {
 	wrap.classList.add('show');
 	setTimeout(()=> {
 		wrap.classList.remove('show');
-	}, 3000)
+	}, 3500)
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -81,8 +81,8 @@ document.addEventListener('DOMContentLoaded', () => {
 		console.log(dir)
 		if (dir.length
 			&& dir !== `uploads${separator}${username}`
-			// && dir !== `uploads${separator}${username}/`
-			// && dir !== `uploads/${username}`
+			// Test on windows
+			&& dir !== `uploads${separator}${username}/`
 		) {
 			let templateDirUp = `
 				<tr data-up data-dir="${dir}">

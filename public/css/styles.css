@@ -1,5 +1,5 @@
 body {
-  background-color: antiquewhite;
+  background-color: #cfeaf7;
   margin: 0 auto;
 }
 
@@ -57,13 +57,9 @@ body {
 .navbar-right {
   margin-right: 0;
 }
-.table tr:hover{
+.table :not(thead) tr:hover{
   background: #aca6a6;
   cursor: pointer;
-}
-
-.table tr{
-  /*background: url("../img/folder.svg");*/
 }
 
 img{
@@ -107,13 +103,17 @@ section{
   padding-left: 50px;
 }
 
-.table tr[data-type="dir"]{
+.table td, .table th{
+  border-color: #000!important;
+}
+
+.table tr[data-type="dir"] td:first-child{
   background: url("../img/folder.svg")  no-repeat center left / contain;
 }
 
-.table tr[data-type="file"]{
+.table tr[data-type="file"] td:first-child{
   background: url("../img/html.svg") no-repeat center left / contain;
 }
-.table tr[data-is-img='true']{
+.table tr[data-is-img='true'] td:first-child{
   background: url("../img/jpg.svg") no-repeat center left / contain;
 }
