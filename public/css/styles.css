@@ -84,3 +84,19 @@ section{
 .search{
   width: 100%;
 }
+
+.message-alert{
+  position: fixed;
+  right: 0;
+  top: 50px;
+  padding: 20px 15px;
+  background-color: #ffffff;
+  border-radius: 5px;
+  border-left: 4px solid orange;
+  transform: translateX(100%);
+  transition: all .3s ease-in-out;
+}
+
+.message-alert.show{
+  transform: unset;
+}

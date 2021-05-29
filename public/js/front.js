@@ -51,6 +51,14 @@ const renderFileSystemMemory = (memoryWrap, memory) => {
 	memoryWrap.innerHTML = listRender(memory);
 }
 
+const messageAlert = (wrap, message) => {
+	wrap.textContent = message;
+	wrap.classList.add('show');
+	setTimeout(()=> {
+		wrap.classList.remove('show');
+	}, 5000)
+}
+
 document.addEventListener('DOMContentLoaded', () => {
 	'use strict'
 
@@ -60,6 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	const formUpload = document.getElementById('upload-form')
 	const addFolder = document.getElementById('add-folder')
 	const searchInput = document.querySelector('.search')
+	const messageWrap = document.querySelector('.message-alert');
 	let dirUrl = `uploads/${username}`;
 	let dirName = '';
 	let separator = navigator.appVersion.indexOf("Win") !== -1 ? '\\' : '/';
@@ -117,11 +126,8 @@ document.addEventListener('DOMContentLoaded', () => {
 				elem = e.target.closest('[data-type="dir"]');
 				dirName = elem.querySelector('[data-name]').textContent;
 				dirUrl = elem.getAttribute('data-dir') + separator + elem.querySelector('[data-name]').textContent
-				getRequest(`http://localhost:3010/${username}-file/?idDir=${dirUrl}`).then(({
-																								userFiles,
-																								memory,
-																								parentDir
-																							}) => {
+				getRequest(`http://localhost:3010/${username}-file/?idDir=${dirUrl}`)
+					.then(({userFiles, memory, parentDir}) => {
 					renderTableBody(userFiles, parentDir);
 					renderFileSystemMemory(memoryWrap, memory);
 				})
@@ -131,9 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				let parentUrl = elem.getAttribute('data-dir');
 				dirUrl = parentUrl.slice(0, dirUrl.lastIndexOf(separator))
 				getRequest(`http://localhost:3010/${username}-file/?idDir=${dirUrl}`)
-					.then(({
-							   userFiles, memory, parentDir
-						   }) => {
+					.then(({userFiles, memory, parentDir}) => {
 						renderTableBody(userFiles, parentDir);
 						renderFileSystemMemory(memoryWrap, memory);
 					})
@@ -176,12 +180,16 @@ document.addEventListener('DOMContentLoaded', () => {
 			let nameDir = input.value;
 			if (nameDir.trim().length) {
 				postRequest(`http://localhost:3010/${username}-file/?idDir=${dirUrl}`, 'nameDir', nameDir)
-					.then( data => data.json()).then( ({userFiles, memory, parentDir, message}) => {
+					.then( data => data.json())
+					.then( ({userFiles, memory, parentDir, message}) => {
 							input.value = ''
 							renderTableBody(userFiles, parentDir);
 							renderFileSystemMemory(memoryWrap, memory);
-					}
-				)
+							messageAlert(messageWrap, message)
+					})
+					.catch(error => {
+						messageAlert(messageWrap, error)
+					})
 			}
 		})
 	}
@@ -198,9 +206,10 @@ document.addEventListener('DOMContentLoaded', () => {
 						input.value = ''
 						renderTableBody(userFiles, parentDir);
 						renderFileSystemMemory(memoryWrap, memory);
+						messageAlert(messageWrap, message)
 					})
 					.catch(error => {
-						console.error(error)
+						messageAlert(messageWrap, error)
 					})
 			}
 		})

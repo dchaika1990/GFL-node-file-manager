@@ -89,7 +89,8 @@ class UserController {
 			userFiles: userFiles,
 			memory: fileApp.getMemory(userFiles).freeMemory,
 			allMemory: fileApp.getMemory(userFiles).allMemory,
-			usedMemory: fileApp.getMemory(userFiles).usedMemory
+			usedMemory: fileApp.getMemory(userFiles).usedMemory,
+			message: ''
 		})
 	}
 
