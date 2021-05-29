@@ -4,7 +4,7 @@ const getRequest = async (url) => {
 	return await res.json();
 }
 
-const postRequest = async(url, key, data) => {
+const postRequest = async (url, key, data) => {
 	const formData = new FormData()
 	formData.append(key, data)
 	return await fetch(url, {
@@ -22,12 +22,12 @@ const getCookie = (name) => {
 
 const displayRows = (input, rows) => {
 	let searchValue = input.value.toLowerCase().trimLeft();
-	rows.forEach( row => {
+	rows.forEach(row => {
 		[...row.querySelectorAll('[data-name]')]
-			.some( value => value.textContent.toLowerCase().trimLeft().indexOf(searchValue) > -1 )
+			.some(value => value.textContent.toLowerCase().trimLeft().indexOf(searchValue) > -1)
 			? row.style.display = 'table-row'
 			: row.style.display = 'none'
-	} )
+	})
 }
 
 const showSearch = (searchInput) => {
@@ -59,10 +59,10 @@ document.addEventListener('DOMContentLoaded', () => {
 	const memoryWrap = document.querySelector('.space');
 	const formUpload = document.getElementById('upload-form')
 	const addFolder = document.getElementById('add-folder')
-	const searchInput =  document.querySelector('.search')
+	const searchInput = document.querySelector('.search')
 	let dirUrl = `uploads/${username}`;
 	let dirName = '';
-	let separator = navigator.appVersion.indexOf("Win")!==-1 ? '\\' : '/';
+	let separator = navigator.appVersion.indexOf("Win") !== -1 ? '\\' : '/';
 
 	const renderTableBody = (userFiles, dir = '', up = false) => {
 		const tableBody = table.querySelector('tbody');
@@ -117,9 +117,11 @@ document.addEventListener('DOMContentLoaded', () => {
 				elem = e.target.closest('[data-type="dir"]');
 				dirName = elem.querySelector('[data-name]').textContent;
 				dirUrl = elem.getAttribute('data-dir') + separator + elem.querySelector('[data-name]').textContent
-				getRequest(`http://localhost:3010/${username}-file/?idDir=${dirUrl}`).
-				then(({userFiles, memory, parentDir
-				}) => {
+				getRequest(`http://localhost:3010/${username}-file/?idDir=${dirUrl}`).then(({
+																								userFiles,
+																								memory,
+																								parentDir
+																							}) => {
 					renderTableBody(userFiles, parentDir);
 					renderFileSystemMemory(memoryWrap, memory);
 				})
@@ -129,11 +131,12 @@ document.addEventListener('DOMContentLoaded', () => {
 				let parentUrl = elem.getAttribute('data-dir');
 				dirUrl = parentUrl.slice(0, dirUrl.lastIndexOf(separator))
 				getRequest(`http://localhost:3010/${username}-file/?idDir=${dirUrl}`)
-					.then(({userFiles, memory, parentDir
-				}) => {
-					renderTableBody(userFiles, parentDir);
-					renderFileSystemMemory(memoryWrap, memory);
-				})
+					.then(({
+							   userFiles, memory, parentDir
+						   }) => {
+						renderTableBody(userFiles, parentDir);
+						renderFileSystemMemory(memoryWrap, memory);
+					})
 			}
 		})
 
@@ -171,15 +174,14 @@ document.addEventListener('DOMContentLoaded', () => {
 			e.preventDefault();
 			let input = addFolder.querySelector('input')
 			let nameDir = input.value;
-			if (nameDir.trim().length){
-				postRequest(`http://localhost:3010/${username}-file/?idDir=${dirUrl}`, 'nameDir', nameDir).then(data => {
-					input.value = ''
-					getRequest(`http://localhost:3010/${username}-file/?idDir=${dirUrl}`).
-					then(({userFiles, memory, parentDir}) => {
-						renderTableBody(userFiles, parentDir);
-						renderFileSystemMemory(memoryWrap, memory);
-					})
-				})
+			if (nameDir.trim().length) {
+				postRequest(`http://localhost:3010/${username}-file/?idDir=${dirUrl}`, 'nameDir', nameDir)
+					.then( data => data.json()).then( ({userFiles, memory, parentDir, message}) => {
+							input.value = ''
+							renderTableBody(userFiles, parentDir);
+							renderFileSystemMemory(memoryWrap, memory);
+					}
+				)
 			}
 		})
 	}
@@ -192,13 +194,10 @@ document.addEventListener('DOMContentLoaded', () => {
 			if (file) {
 				postRequest(`http://localhost:3010/${username}-file/?idDir=${dirUrl}`, 'myFile', file)
 					.then(response => response.json())
-					.then(data => {
+					.then(({userFiles, memory, parentDir, message}) => {
 						input.value = ''
-						getRequest(`http://localhost:3010/${username}-file/?idDir=${dirUrl}`).
-						then(({userFiles, memory, parentDir}) => {
-							renderTableBody(userFiles, parentDir);
-							renderFileSystemMemory(memoryWrap, memory);
-						})
+						renderTableBody(userFiles, parentDir);
+						renderFileSystemMemory(memoryWrap, memory);
 					})
 					.catch(error => {
 						console.error(error)

@@ -95,27 +95,42 @@ class UserController {
 
 	getUserDirItemsJson(req, res) {
 		const {username} = req.cookies;
+		const {nameDir} = req.body;
 		const {idDir = `uploads/${username}`} = req.query;
 		let allUserFiles = fileApp.getFolderItems(upload_dir + '/' + username)
+		let message = '';
 		let userFiles
-		if (idDir) {
-			userFiles = fileApp.getFolderItems(idDir)
-			res.json({userFiles, parentDir: idDir, memory: fileApp.getMemory(allUserFiles)})
+		if (req.method === 'GET') {
+			if (idDir) {
+				userFiles = fileApp.getFolderItems(idDir)
+				res.json({userFiles, parentDir: idDir, memory: fileApp.getMemory(allUserFiles), message: ''})
+			}
 		}
 		if (req.method === 'POST') {
 			try {
-				if(req.body.nameDir){
-					fs.mkdirSync(idDir + '/' + req.body.nameDir)
+				if (nameDir) {
+					if (!fs.existsSync(idDir + '/' + nameDir)) {
+						fs.mkdirSync(idDir + '/' + nameDir)
+						message = "Added folder"
+					} else {
+						message = "Directory already exists."
+					}
+
 				}
 				if (req.files) {
 					const filesList = Object.values(req.files);
 					const fileSize = filesList[0].size
 					if ((fileApp.UsedMemory + fileSize) < fileApp.AllMemory) {
 						fileApp.addFiles(filesList, username, idDir)
+						message = "Added file"
+					} else {
+						message = "Not enough memory"
 					}
 				}
+				userFiles = fileApp.getFolderItems(idDir)
+				res.json({userFiles, parentDir: idDir, memory: fileApp.getMemory(allUserFiles), message})
 			} catch (err) {
-				console.log('Server error ',err)
+				console.log('Server error ', err)
 			}
 		}
 	}
