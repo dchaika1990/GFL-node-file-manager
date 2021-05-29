@@ -103,10 +103,11 @@ document.addEventListener('DOMContentLoaded', () => {
 		let template = options.map((data) => templateRender(data))
 		infoImg.innerHTML = '';
 		infoDownload.innerHTML = '';
+		infoImg.src = imgSrc
+		// if ('true' === isImg) {
+		// 	infoImg.src = imgSrc
+		// }
 		if ('true' === isImg) {
-			infoImg.src = imgSrc
-		}
-		if (imgSrc) {
 			let downloadLink = document.createElement('a');
 			downloadLink.href = imgSrc
 			downloadLink.download = options[0].value
@@ -165,15 +166,14 @@ document.addEventListener('DOMContentLoaded', () => {
 				let isImg;
 				if (elem.getAttribute('data-type') === 'dir') {
 					path = '/img/folder.svg'
-					isImg = 'true'
 				}
 				if (elem.getAttribute('data-type') === 'file') {
 					path = '/img/html.svg'
 					isImg = 'true'
 				}
 				if (elem.getAttribute('data-is-img') === 'true') {
-					isImg = elem.getAttribute('data-is-img');
 					path = elem.getAttribute('data-src');
+					isImg = 'true';
 				}
 				renderInfo(options, path, isImg)
 			}

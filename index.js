@@ -2,7 +2,6 @@ const express = require('express');
 const hbs = require('hbs');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const fileUpload = require('express-fileupload');
 const path = require('path');
 
 // const UPLOAD_DIR = path.resolve('./uploads');
