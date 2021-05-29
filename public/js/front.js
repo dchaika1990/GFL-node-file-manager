@@ -56,7 +56,7 @@ const messageAlert = (wrap, message) => {
 	wrap.classList.add('show');
 	setTimeout(()=> {
 		wrap.classList.remove('show');
-	}, 5000)
+	}, 3000)
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -78,10 +78,11 @@ document.addEventListener('DOMContentLoaded', () => {
 		tableBody.innerHTML = '';
 		let listRender = makeRender('.tableBody');
 		let template = userFiles.map((data) => listRender(data))
+		console.log(dir)
 		if (dir.length
 			&& dir !== `uploads${separator}${username}`
-			&& dir !== `uploads${separator}${username}/`
-			&& dir !== `uploads/${username}`
+			// && dir !== `uploads${separator}${username}/`
+			// && dir !== `uploads/${username}`
 		) {
 			let templateDirUp = `
 				<tr data-up data-dir="${dir}">
@@ -96,22 +97,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	const renderInfo = (options, imgSrc = '', isImg = false) => {
 		const infoUl = document.querySelector('.information-content ul');
-		const infoImg = document.querySelector('.information-media');
+		const infoImg = document.querySelector('.information-media img');
 		const infoDownload = document.querySelector('.information-download');
 		let templateRender = makeRender('.infoTemplate')
 		let template = options.map((data) => templateRender(data))
 		infoImg.innerHTML = '';
 		infoDownload.innerHTML = '';
 		if ('true' === isImg) {
-			let imgTag = document.createElement('img');
-			imgTag.src = imgSrc
-			imgTag.alt = 'image'
-			infoImg.append(imgTag)
+			infoImg.src = imgSrc
 		}
 		if (imgSrc) {
 			let downloadLink = document.createElement('a');
 			downloadLink.href = imgSrc
 			downloadLink.download = options[0].value
+			downloadLink.classList.add('btn', 'btn-info')
 			downloadLink.textContent = 'Download'
 			infoDownload.append(downloadLink)
 		}
@@ -127,9 +126,10 @@ document.addEventListener('DOMContentLoaded', () => {
 				dirName = elem.querySelector('[data-name]').textContent;
 				dirUrl = elem.getAttribute('data-dir') + separator + elem.querySelector('[data-name]').textContent
 				getRequest(`http://localhost:3010/${username}-file/?idDir=${dirUrl}`)
-					.then(({userFiles, memory, parentDir}) => {
+					.then(({userFiles, memory, parentDir, message}) => {
 					renderTableBody(userFiles, parentDir);
 					renderFileSystemMemory(memoryWrap, memory);
+					messageAlert(messageWrap, message)
 				})
 			}
 			if (e.target.closest('[data-up]')) {
@@ -140,6 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
 					.then(({userFiles, memory, parentDir}) => {
 						renderTableBody(userFiles, parentDir);
 						renderFileSystemMemory(memoryWrap, memory);
+						messageAlert(messageWrap, 'Return back')
 					})
 			}
 		})
@@ -161,12 +162,18 @@ document.addEventListener('DOMContentLoaded', () => {
 					})
 				}
 				let path;
-				if (elem.hasAttribute('data-src')) {
-					path = elem.getAttribute('data-src');
-				}
 				let isImg;
-				if (elem.hasAttribute('data-is-img')) {
+				if (elem.getAttribute('data-type') === 'dir') {
+					path = '/img/folder.svg'
+					isImg = 'true'
+				}
+				if (elem.getAttribute('data-type') === 'file') {
+					path = '/img/html.svg'
+					isImg = 'true'
+				}
+				if (elem.getAttribute('data-is-img') === 'true') {
 					isImg = elem.getAttribute('data-is-img');
+					path = elem.getAttribute('data-src');
 				}
 				renderInfo(options, path, isImg)
 			}

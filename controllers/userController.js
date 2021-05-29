@@ -104,7 +104,7 @@ class UserController {
 		if (req.method === 'GET') {
 			if (idDir) {
 				userFiles = fileApp.getFolderItems(idDir)
-				res.json({userFiles, parentDir: idDir, memory: fileApp.getMemory(allUserFiles), message: ''})
+				res.json({userFiles, parentDir: idDir, memory: fileApp.getMemory(allUserFiles), message: 'Open folder'})
 			}
 		}
 		if (req.method === 'POST') {

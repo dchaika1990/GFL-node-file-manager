@@ -4,7 +4,7 @@
 <section>
     <h1>Login</h1>
 
-    {{#if erroMessage}} <p class="">{{erroMessage}}</p> {{/if}}
+    {{#if erroMessage}} <p class="message-alert show">{{erroMessage}}</p> {{/if}}
 
     <form method="POST" action="/login">
         <div class='form-group {{#if login}}has-error{{/if}}'>

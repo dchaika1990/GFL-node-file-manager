@@ -67,7 +67,7 @@ body {
 }
 
 img{
-  max-width: 100%;
+  width: 100%;
   height: auto;
 }
 
@@ -88,15 +88,32 @@ section{
 .message-alert{
   position: fixed;
   right: 0;
-  top: 50px;
-  padding: 20px 15px;
+  top: 100px;
+  padding: 20px 25px;
+  min-width: 300px;
   background-color: #ffffff;
-  border-radius: 5px;
+  border-radius: 5px 0 0 5px;
   border-left: 4px solid orange;
   transform: translateX(100%);
+  box-shadow: 0 4px 10px 2px rgba(0, 0, 0, .01);
   transition: all .3s ease-in-out;
 }
 
 .message-alert.show{
   transform: unset;
+}
+
+.table tr td:first-child{
+  padding-left: 50px;
+}
+
+.table tr[data-type="dir"]{
+  background: url("../img/folder.svg")  no-repeat center left / contain;
+}
+
+.table tr[data-type="file"]{
+  background: url("../img/html.svg") no-repeat center left / contain;
+}
+.table tr[data-is-img='true']{
+  background: url("../img/jpg.svg") no-repeat center left / contain;
 }
