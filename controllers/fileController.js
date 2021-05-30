@@ -1,7 +1,6 @@
 const fileModel = require('../models/fileModel');
 const fileApp = require('../models/File');
 const fs = require('fs')
-const os = require('os')
 
 class FileController {
 	register(req, res) {
@@ -80,8 +79,7 @@ class FileController {
 
 	getUserItems(req, res) {
 		const {username} = req.cookies;
-		const separator = os.type() === 'Windows_NT' ? '\\' : '/';
-		let userFiles = fileApp.getFolderItems(upload_dir + separator + username)
+		let userFiles = fileApp.getFolderItems(upload_dir + '/' + username)
 		let success = '';
 
 		res.render('pages/home.hbs', {
@@ -99,9 +97,8 @@ class FileController {
 	getUserDirItemsJson(req, res) {
 		const {username} = req.cookies;
 		const {nameDir} = req.body;
-		const separator = os.type() === 'Windows_NT' ? '\\' : '/';
-		const {folderUrl = `uploads${separator}${username}`} = req.query;
-		let allUserFiles = fileApp.getFolderItems(upload_dir + separator + username)
+		const {folderUrl = `uploads/${username}`} = req.query;
+		let allUserFiles = fileApp.getFolderItems(upload_dir + '/' + username)
 		let message = '';
 		let userFiles
 		if (req.method === 'GET') {
@@ -113,8 +110,8 @@ class FileController {
 		if (req.method === 'POST') {
 			try {
 				if (nameDir) {
-					if (!fs.existsSync(folderUrl + separator + nameDir)) {
-						fs.mkdirSync(folderUrl + separator + nameDir)
+					if (!fs.existsSync(folderUrl + '/' + nameDir)) {
+						fs.mkdirSync(folderUrl + '/' + nameDir)
 						message = "Added folder"
 					} else {
 						message = "Directory already exists."

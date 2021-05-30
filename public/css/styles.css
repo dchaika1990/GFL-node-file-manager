@@ -58,7 +58,7 @@ body {
   margin-right: 0;
 }
 .table :not(thead) tr:hover{
-  background: #aca6a6;
+  background: #ffeaea;
   cursor: pointer;
 }
 

@@ -107,16 +107,15 @@ class FileApp {
 
 	addFiles(filesList, username, folderUrl) {
 		filesList.forEach((file, i) => {
-			file.mv(folderUrl + '/' + file.name, (err) => {
-					const result = {
-						id: i,
-						name: file.name,
-						mimetype: file.mimetype,
-						size: file.size,
-						status: true,
-					};
+			file.mv(folderUrl + '/' + file.name).then(res => {
+				return {
+					id: i,
+					name: file.name,
+					mimetype: file.mimetype,
+					size: file.size,
+					status: true,
 				}
-			);
+			});
 		});
 	}
 
