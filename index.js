@@ -10,10 +10,10 @@ global.upload_dir = UPLOAD_DIR;
 const app = express();
 
 const {
-	userRouter
+	homeRouter
 } = require('./routes');
 
-const { UserController } = require('./controllers');
+const { FileController } = require('./controllers');
 
 app.set('view engine', 'hbs');
 app.set('views', __dirname + '/public/views');
@@ -29,8 +29,8 @@ app.use('/styles', express.static(__dirname + '/public/css'));
 app.use('/img', express.static(__dirname + '/public/img'));
 app.use('/uploads', express.static(upload_dir));
 
-app.use(UserController.isValidUser);
-app.use('/', userRouter);
+app.use(FileController.isValidUser);
+app.use('/', homeRouter);
 
 app.use((req, res) => {
 	res.render('pages/404.hbs')

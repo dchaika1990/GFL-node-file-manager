@@ -69,9 +69,9 @@ document.addEventListener('DOMContentLoaded', () => {
 	const addFolder = document.getElementById('add-folder')
 	const searchInput = document.querySelector('.search')
 	const messageWrap = document.querySelector('.message-alert');
-	let dirUrl = `uploads/${username}`;
-	let dirName = '';
 	let separator = navigator.appVersion.indexOf("Win") !== -1 ? '\\' : '/';
+	let dirUrl = `uploads${separator}${username}`;
+	let dirName = '';
 
 	const renderTableBody = (userFiles, dir = '', up = false) => {
 		const tableBody = table.querySelector('tbody');
@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		if (dir.length
 			&& dir !== `uploads${separator}${username}`
 			// Test on windows
-			&& dir !== `uploads${separator}${username}/`
+			// && dir !== `uploads${separator}${username}/`
 		) {
 			let templateDirUp = `
 				<tr data-up data-dir="${dir}">
@@ -104,9 +104,6 @@ document.addEventListener('DOMContentLoaded', () => {
 		infoImg.innerHTML = '';
 		infoDownload.innerHTML = '';
 		infoImg.src = imgSrc
-		// if ('true' === isImg) {
-		// 	infoImg.src = imgSrc
-		// }
 		if ('true' === isImg) {
 			let downloadLink = document.createElement('a');
 			downloadLink.href = imgSrc
@@ -126,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				elem = e.target.closest('[data-type="dir"]');
 				dirName = elem.querySelector('[data-name]').textContent;
 				dirUrl = elem.getAttribute('data-dir') + separator + elem.querySelector('[data-name]').textContent
-				getRequest(`http://localhost:3010/${username}-file/?idDir=${dirUrl}`)
+				getRequest(`http://localhost:3010/${username}-files/?folderUrl=${dirUrl}`)
 					.then(({userFiles, memory, parentDir, message}) => {
 					renderTableBody(userFiles, parentDir);
 					renderFileSystemMemory(memoryWrap, memory);
@@ -137,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				elem = e.target.closest('[data-up]');
 				let parentUrl = elem.getAttribute('data-dir');
 				dirUrl = parentUrl.slice(0, dirUrl.lastIndexOf(separator))
-				getRequest(`http://localhost:3010/${username}-file/?idDir=${dirUrl}`)
+				getRequest(`http://localhost:3010/${username}-files/?folderUrl=${dirUrl}`)
 					.then(({userFiles, memory, parentDir}) => {
 						renderTableBody(userFiles, parentDir);
 						renderFileSystemMemory(memoryWrap, memory);
@@ -186,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			let input = addFolder.querySelector('input')
 			let nameDir = input.value;
 			if (nameDir.trim().length) {
-				postRequest(`http://localhost:3010/${username}-file/?idDir=${dirUrl}`, 'nameDir', nameDir)
+				postRequest(`http://localhost:3010/${username}-files/?folderUrl=${dirUrl}`, 'nameDir', nameDir)
 					.then( data => data.json())
 					.then( ({userFiles, memory, parentDir, message}) => {
 							input.value = ''
@@ -207,7 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			let input = formUpload.querySelector('[type="file"]')
 			let file = input.files[0]
 			if (file) {
-				postRequest(`http://localhost:3010/${username}-file/?idDir=${dirUrl}`, 'myFile', file)
+				postRequest(`http://localhost:3010/${username}-files/?folderUrl=${dirUrl}`, 'myFile', file)
 					.then(response => response.json())
 					.then(({userFiles, memory, parentDir, message}) => {
 						input.value = ''

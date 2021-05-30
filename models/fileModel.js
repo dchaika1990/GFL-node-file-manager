@@ -1,7 +1,7 @@
 const Database = require('./DB');
 const fileApp = require('./File');
 
-class UserModel {
+class FileModel {
 	isExists(username, callback) {
 		Database.query(
 			'SELECT COUNT(id) as `exists` FROM users WHERE name=? LIMIT 1',
@@ -44,66 +44,6 @@ class UserModel {
 				}
 			);
 		});
-	}
-
-	login(username, password, callback) {
-		if (!username)
-			return callback({
-				success: false,
-				msg: 'Username is required',
-			});
-
-		if (!password)
-			return callback({
-				success: false,
-				msg: 'Password is required',
-			});
-
-		Database.query(
-			'SELECT id, name, password FROM users WHERE name=? AND password=SHA1(?) LIMIT 1',
-			[username, password],
-			result => {
-				const {success, msg} = result;
-
-				if (success) {
-					if (msg.length != 0) {
-						const {id, password: securedPass} = msg[0];
-						Database.query(
-							'UPDATE users SET token=SHA1(?) WHERE id=? LIMIT 1',
-							[`${username}${securedPass}${new Date().getTime()}`, id],
-							result => {
-								const {success} = result;
-
-								if (success) {
-									Database.query(
-										'SELECT token FROM users WHERE id=?',
-										[id],
-										result => {
-											callback({
-												success: true,
-												msg: result.msg[0].token,
-											});
-										}
-									);
-								} else {
-									callback({
-										success: false,
-										msg: `Smth went wrong. Please try later.`,
-									});
-								}
-							}
-						);
-					} else {
-						callback({
-							success: false,
-							msg: `User ${username} not found`,
-						});
-					}
-				} else {
-					callback(result);
-				}
-			}
-		);
 	}
 
 	async loginPromised(username, password, callback) {
@@ -174,4 +114,4 @@ class UserModel {
 	}
 }
 
-module.exports = new UserModel();
+module.exports = new FileModel();

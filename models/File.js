@@ -11,12 +11,12 @@ class FileApp {
 		}
 	}
 
-	__getFolderSize(dirTree) {
+	_getDirSize(dirTree) {
 		const dirItems = Object.keys(dirTree);
 		let sizeBytes = 0;
 		dirItems.forEach(item => {
 			const itemObj = dirTree[item];
-			sizeBytes += itemObj.isFile ? itemObj.sizeBytes : this.__getFolderSize(itemObj.items);
+			sizeBytes += itemObj.isFile ? itemObj.sizeBytes : this._getDirSize(itemObj.items);
 			if (itemObj.isDir) {
 				itemObj.sizeBytes = sizeBytes
 			}
@@ -25,7 +25,7 @@ class FileApp {
 		return sizeBytes;
 	};
 
-	__formatSizeUnits(bytes) {
+	_formatSizeUnits(bytes) {
 		if (bytes >= 1073741824) {
 			bytes = (bytes / 1073741824).toFixed(2) + " GB";
 		} else if (bytes >= 1048576) {
@@ -50,7 +50,7 @@ class FileApp {
 				try {
 					const {basename: base, dir} = path.parse(path.join(pathName, item));
 					const stats = fs.statSync(path.join(pathName, item));
-					let id = Math.floor(Math.random() * 10000000) + i
+					let id = Math.floor(Math.random() * 10000) + i
 					let extname = path.extname(item)
 					let isImg = false;
 					if (extname === '.jpg' || extname === '.png') {
@@ -66,7 +66,7 @@ class FileApp {
 							basename: base,
 							dir,
 							sizeBytes: stats.size,
-							size: this.__formatSizeUnits(stats.size),
+							size: this._formatSizeUnits(stats.size),
 							birthtime: new Date(stats.ctime).toLocaleDateString(),
 							isFile: stats.isFile(),
 							isDir: stats.isDirectory(),
@@ -77,8 +77,8 @@ class FileApp {
 							name: item,
 							basename: base,
 							dir,
-							sizeBytes: this.__getFolderSize(this.getFolderItems(path.join(pathName, item))),
-							size: this.__formatSizeUnits(this.__getFolderSize(this.getFolderItems(path.join(pathName, item)))),
+							sizeBytes: this._getDirSize(this.getFolderItems(path.join(pathName, item))),
+							size: this._formatSizeUnits(this._getDirSize(this.getFolderItems(path.join(pathName, item)))),
 							birthtime: new Date(stats.ctime).toLocaleDateString(),
 							isFile: stats.isFile(),
 							isDir: stats.isDirectory(),
@@ -105,9 +105,9 @@ class FileApp {
 	}
 
 
-	addFiles(filesList, username, idDir) {
+	addFiles(filesList, username, folderUrl) {
 		filesList.forEach((file, i) => {
-			file.mv(idDir + '/' + file.name, (err) => {
+			file.mv(folderUrl + '/' + file.name, (err) => {
 					const result = {
 						id: i,
 						name: file.name,
@@ -121,11 +121,11 @@ class FileApp {
 	}
 
 	getMemory(pathname) {
-		this.USED_MEMORY = this.__getFolderSize(pathname);
+		this.USED_MEMORY = this._getDirSize(pathname);
 		return {
-			allMemory: this.__formatSizeUnits(this.USER_MAX_SIZE),
-			freeMemory: this.__formatSizeUnits(this.USER_MAX_SIZE - this.USED_MEMORY),
-			usedMemory: this.__formatSizeUnits(this.USED_MEMORY)
+			allMemory: this._formatSizeUnits(this.USER_MAX_SIZE),
+			freeMemory: this._formatSizeUnits(this.USER_MAX_SIZE - this.USED_MEMORY),
+			usedMemory: this._formatSizeUnits(this.USED_MEMORY)
 		};
 	}
 }

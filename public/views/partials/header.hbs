@@ -16,10 +16,38 @@
     <nav class="navbar navbar-light bg-light">
         <div class="container">
             <div class="row">
-                <div class="col-6">
+                <div class="col-2">
                     <span class="navbar-brand mb-0 h1">File manager</span>
                 </div>
-                <div class="col-6 text-right">
+                {{#if allMemory}}
+                <div class="col">
+                    <div class="form-group d-flex">
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                + Add
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <form class="dropdown-item" id="upload-form" action="/user/{{username}}-files" method="post"
+                                      enctype="multipart/form-data">
+                                    <div class="form-group">
+                                        <input type="file" id="file" name="file[0]" class="form-control-file">
+                                    </div>
+                                    <button type='submit' class='btn btn-success'>Upload file</button>
+                                </form>
+                                <form class="dropdown-item" id="add-folder" action="/user/{{username}}-files" method="post"
+                                      enctype="multipart/form-data">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" name="folderName" placeholder="Folder name">
+                                    </div>
+                                    <button type='submit' class='btn btn-success'>Add folder</button>
+                                </form>
+                            </div>
+                        </div>
+                        <input class="form-control search" placeholder="Search" type="text">
+                    </div>
+                </div>
+                {{/if}}
+                <div class="col-2 text-right">
                     <a class="btn btn-danger" href="/logout">Logout</a>
                 </div>
             </div>

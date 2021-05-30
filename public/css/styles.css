@@ -117,3 +117,21 @@ section{
 .table tr[data-is-img='true'] td:first-child{
   background: url("../img/jpg.svg") no-repeat center left / contain;
 }
+.dropdown-menu{
+  min-width: 500px;
+}
+
+.dropdown-menu form{
+  display: flex;
+  align-items: center;
+}
+
+.dropdown-menu input{
+  width: 100%;
+}
+
+.dropdown-menu .form-group{
+  margin-bottom: 0;
+  width: 100%;
+  margin-right: 15px;
+}

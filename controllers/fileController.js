@@ -1,8 +1,9 @@
-const userModel = require('../models/userModel');
+const fileModel = require('../models/fileModel');
 const fileApp = require('../models/File');
 const fs = require('fs')
+const os = require('os')
 
-class UserController {
+class FileController {
 	register(req, res) {
 		const {
 			method,
@@ -11,7 +12,7 @@ class UserController {
 
 		if (method === 'GET') return res.render('pages/create.hbs');
 
-		userModel.register(username, password, result => {
+		fileModel.register(username, password, result => {
 			const {success, msg} = result;
 
 			if (!success) {
@@ -19,7 +20,7 @@ class UserController {
 					erroMessage: msg,
 				});
 			} else {
-				userModel.loginPromised(username, password, result => {
+				fileModel.loginPromised(username, password, result => {
 					const {success, msg} = result;
 					if (!success) {
 						return res.render('pages/login.hbs', {
@@ -43,7 +44,7 @@ class UserController {
 
 		if (method === 'GET') return res.render('pages/login.hbs');
 
-		userModel.loginPromised(username, password, result => {
+		fileModel.loginPromised(username, password, result => {
 			const {success, msg} = result;
 			if (!success) {
 				return res.render('pages/login.hbs', {
@@ -65,7 +66,7 @@ class UserController {
 	}
 
 	isValidUser(req, res, next) {
-		userModel.isValidToken(req.cookies.token || '', isValid => {
+		fileModel.isValidToken(req.cookies.token || '', isValid => {
 			const {url} = req;
 
 			if (isValid) next();
@@ -79,7 +80,8 @@ class UserController {
 
 	getUserItems(req, res) {
 		const {username} = req.cookies;
-		let userFiles = fileApp.getFolderItems(upload_dir + '/' + username)
+		const separator = os.type() === 'Windows_NT' ? '\\' : '/';
+		let userFiles = fileApp.getFolderItems(upload_dir + separator + username)
 		let success = '';
 
 		res.render('pages/home.hbs', {
@@ -97,39 +99,39 @@ class UserController {
 	getUserDirItemsJson(req, res) {
 		const {username} = req.cookies;
 		const {nameDir} = req.body;
-		const {idDir = `uploads/${username}`} = req.query;
-		let allUserFiles = fileApp.getFolderItems(upload_dir + '/' + username)
+		const separator = os.type() === 'Windows_NT' ? '\\' : '/';
+		const {folderUrl = `uploads${separator}${username}`} = req.query;
+		let allUserFiles = fileApp.getFolderItems(upload_dir + separator + username)
 		let message = '';
 		let userFiles
 		if (req.method === 'GET') {
-			if (idDir) {
-				userFiles = fileApp.getFolderItems(idDir)
-				res.json({userFiles, parentDir: idDir, memory: fileApp.getMemory(allUserFiles), message: 'Open folder'})
+			if (folderUrl) {
+				userFiles = fileApp.getFolderItems(folderUrl)
+				res.json({userFiles, parentDir: folderUrl, memory: fileApp.getMemory(allUserFiles), message: 'Open folder'})
 			}
 		}
 		if (req.method === 'POST') {
 			try {
 				if (nameDir) {
-					if (!fs.existsSync(idDir + '/' + nameDir)) {
-						fs.mkdirSync(idDir + '/' + nameDir)
+					if (!fs.existsSync(folderUrl + separator + nameDir)) {
+						fs.mkdirSync(folderUrl + separator + nameDir)
 						message = "Added folder"
 					} else {
 						message = "Directory already exists."
 					}
-
 				}
 				if (req.files) {
 					const filesList = Object.values(req.files);
 					const fileSize = filesList[0].size
 					if ((fileApp.UsedMemory + fileSize) < fileApp.AllMemory) {
-						fileApp.addFiles(filesList, username, idDir)
+						fileApp.addFiles(filesList, username, folderUrl)
 						message = "Added file"
 					} else {
 						message = "Not enough memory"
 					}
 				}
-				userFiles = fileApp.getFolderItems(idDir)
-				res.json({userFiles, parentDir: idDir, memory: fileApp.getMemory(allUserFiles), message})
+				userFiles = fileApp.getFolderItems(folderUrl)
+				res.json({userFiles, parentDir: folderUrl, memory: fileApp.getMemory(allUserFiles), message})
 			} catch (err) {
 				console.log('Server error ', err)
 			}
@@ -137,4 +139,4 @@ class UserController {
 	}
 }
 
-exports.UserController = new UserController();
+exports.FileController = new FileController();
