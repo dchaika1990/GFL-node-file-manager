@@ -16,14 +16,14 @@ class FileController {
 
 			if (!success) {
 				return res.render('pages/create.hbs', {
-					erroMessage: msg,
+					errorMessage: msg,
 				});
 			} else {
 				fileModel.loginPromised(username, password, result => {
 					const {success, msg} = result;
 					if (!success) {
 						return res.render('pages/login.hbs', {
-							erroMessage: msg,
+							errorMessage: msg,
 						});
 					}
 					res.cookie('token', msg, {
@@ -47,7 +47,7 @@ class FileController {
 			const {success, msg} = result;
 			if (!success) {
 				return res.render('pages/login.hbs', {
-					erroMessage: msg,
+					errorMessage: msg,
 				});
 			}
 			res.cookie('token', msg, {

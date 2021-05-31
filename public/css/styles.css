@@ -99,6 +99,10 @@ section{
   transform: unset;
 }
 
+.table{
+  box-shadow: 0 0 5px 2px rgba(0, 0, 0, .01);
+}
+
 .table tr td:first-child{
   padding-left: 50px;
 }

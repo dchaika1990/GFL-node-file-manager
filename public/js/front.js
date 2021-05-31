@@ -1,16 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
 	'use strict'
 
-	const table = document.querySelector('.table')
-	const username = getCookie('username');
-	const memoryWrap = document.querySelector('.space');
-	const formUpload = document.getElementById('upload-form')
-	const addFolder = document.getElementById('add-folder')
-	const searchInput = document.querySelector('.search')
-	const messageWrap = document.querySelector('.message-alert');
-	let separator = navigator.appVersion.indexOf("Win") !== -1 ? '\\' : '/';
-	let dirUrl = `uploads${separator}${username}`;
-	let dirName = '';
+	const table = document.querySelector('.table'),
+		username = getCookie('username'),
+		memoryWrap = document.querySelector('.space'),
+		formUpload = document.getElementById('upload-form'),
+		addFolder = document.getElementById('add-folder'),
+		searchInput = document.querySelector('.search'),
+		messageWrap = document.querySelector('.message-alert')
+	let separator = navigator.appVersion.indexOf("Win") !== -1 ? '\\' : '/',
+		dirUrl = `uploads${separator}${username}`,
+		dirName = ''
 
 	function getCookie(name) {
 		let matches = document.cookie.match(new RegExp(
@@ -93,14 +93,14 @@ document.addEventListener('DOMContentLoaded', () => {
 			let template = options.map((data) => templateRender(data))
 			infoImg.innerHTML = '';
 			infoDownload.innerHTML = '';
-			infoImg.src = imgSrc
+			infoImg.src = imgSrc;
 			if ('true' === isImg) {
 				let downloadLink = document.createElement('a');
-				downloadLink.href = imgSrc
-				downloadLink.download = options[0].value
-				downloadLink.classList.add('btn', 'btn-info')
-				downloadLink.textContent = 'Download'
-				infoDownload.append(downloadLink)
+				downloadLink.href = imgSrc;
+				downloadLink.download = options[0].value;
+				downloadLink.classList.add('btn', 'btn-info');
+				downloadLink.textContent = 'Download';
+				infoDownload.append(downloadLink);
 			}
 			infoUl.innerHTML = template.join('')
 		}
@@ -176,7 +176,8 @@ document.addEventListener('DOMContentLoaded', () => {
 			let input = addFolder.querySelector('input')
 			let nameDir = input.value;
 			if (nameDir.trim().length) {
-				fileManager.postRequest(`http://localhost:3010/${username}-files/?folderUrl=${dirUrl}`, 'nameDir', nameDir)
+				fileManager
+					.postRequest(`http://localhost:3010/${username}-files/?folderUrl=${dirUrl}`, 'nameDir', nameDir)
 					.then(data => data.json())
 					.then(({userFiles, memory, parentDir, message}) => {
 						fileManager
@@ -198,7 +199,8 @@ document.addEventListener('DOMContentLoaded', () => {
 			let input = formUpload.querySelector('[type="file"]')
 			let file = input.files[0]
 			if (file) {
-				fileManager.postRequest(`http://localhost:3010/${username}-files/?folderUrl=${dirUrl}`, 'myFile', file)
+				fileManager
+					.postRequest(`http://localhost:3010/${username}-files/?folderUrl=${dirUrl}`, 'myFile', file)
 					.then(response => response.json())
 					.then(({userFiles, memory, parentDir, message}) => {
 						fileManager
