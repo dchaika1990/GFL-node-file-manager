@@ -55,27 +55,25 @@ document.addEventListener('DOMContentLoaded', () => {
 			let template = document.querySelector(selector).innerHTML;
 			return new Function('data', 'return `' + template + '`');
 		},
-		renderFileSystemMemory: (memoryWrap, memory) => {
+		renderFileSystemMemory(memoryWrap, memory) {
 			memoryWrap.innerHTML = '';
 			let listRender = fileManager.makeRender('.freeSpaceTemplate');
 			memoryWrap.innerHTML = listRender(memory);
+			return this
 		},
 		messageAlert: (wrap, message) => {
 			wrap.textContent = message;
 			wrap.classList.add('show');
-			setTimeout(()=> {
+			setTimeout(() => {
 				wrap.classList.remove('show');
 			}, 3500)
 		},
-		renderTableBody: (userFiles, dir = '', up = false) => {
+		renderTableBody(userFiles, dir = '', up = false) {
 			const tableBody = table.querySelector('tbody');
 			tableBody.innerHTML = '';
 			let listRender = fileManager.makeRender('.tableBody');
 			let template = userFiles.map((data) => listRender(data))
-			console.log(dir)
-			if (dir.length
-				&& dir !== `uploads${separator}${username}`
-			) {
+			if (dir.length && dir !== `uploads${separator}${username}`) {
 				let templateDirUp = `
 				<tr data-up data-dir="${dir}">
 					<td colspan="4">...</td>
@@ -85,6 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			}
 			tableBody.innerHTML = (template.join(''))
 			fileManager.showSearch(searchInput);
+			return this
 		},
 		renderInfo: (options, imgSrc = '', isImg = false) => {
 			const infoUl = document.querySelector('.information-content ul');
@@ -117,9 +116,10 @@ document.addEventListener('DOMContentLoaded', () => {
 				dirUrl = elem.getAttribute('data-dir') + separator + elem.querySelector('[data-name]').textContent
 				fileManager.getRequest(`http://localhost:3010/${username}-files/?folderUrl=${dirUrl}`)
 					.then(({userFiles, memory, parentDir, message}) => {
-						fileManager.renderTableBody(userFiles, parentDir);
-						fileManager.renderFileSystemMemory(memoryWrap, memory);
-						fileManager.messageAlert(messageWrap, message)
+						fileManager
+							.renderTableBody(userFiles, parentDir)
+							.renderFileSystemMemory(memoryWrap, memory)
+							.messageAlert(messageWrap, message);
 					})
 			}
 			if (e.target.closest('[data-up]')) {
@@ -128,9 +128,10 @@ document.addEventListener('DOMContentLoaded', () => {
 				dirUrl = parentUrl.slice(0, dirUrl.lastIndexOf(separator))
 				fileManager.getRequest(`http://localhost:3010/${username}-files/?folderUrl=${dirUrl}`)
 					.then(({userFiles, memory, parentDir}) => {
-						fileManager.renderTableBody(userFiles, parentDir);
-						fileManager.renderFileSystemMemory(memoryWrap, memory);
-						fileManager.messageAlert(messageWrap, 'Return back')
+						fileManager
+							.renderTableBody(userFiles, parentDir)
+							.renderFileSystemMemory(memoryWrap, memory)
+							.messageAlert(messageWrap, 'Return back');
 					})
 			}
 		})
@@ -145,14 +146,14 @@ document.addEventListener('DOMContentLoaded', () => {
 					{name: 'Size', value: elem.querySelector('[data-size]').textContent},
 					{name: 'Created', value: elem.querySelector('[data-created]').textContent},
 				]
+				let path;
+				let isImg;
 				if (elem.hasAttribute('data-items-length')) {
 					options.push({
 						name: 'Files count',
 						value: elem.getAttribute('data-items-length')
 					})
 				}
-				let path;
-				let isImg;
 				if (elem.getAttribute('data-type') === 'dir') {
 					path = '/img/folder.svg'
 				}
@@ -176,12 +177,13 @@ document.addEventListener('DOMContentLoaded', () => {
 			let nameDir = input.value;
 			if (nameDir.trim().length) {
 				fileManager.postRequest(`http://localhost:3010/${username}-files/?folderUrl=${dirUrl}`, 'nameDir', nameDir)
-					.then( data => data.json())
-					.then( ({userFiles, memory, parentDir, message}) => {
-							input.value = ''
-							fileManager.renderTableBody(userFiles, parentDir);
-							fileManager.renderFileSystemMemory(memoryWrap, memory);
-							fileManager.messageAlert(messageWrap, message)
+					.then(data => data.json())
+					.then(({userFiles, memory, parentDir, message}) => {
+						fileManager
+							.renderTableBody(userFiles, parentDir)
+							.renderFileSystemMemory(memoryWrap, memory)
+							.messageAlert(messageWrap, message);
+						input.value = ''
 					})
 					.catch(error => {
 						fileManager.messageAlert(messageWrap, error)
@@ -199,10 +201,11 @@ document.addEventListener('DOMContentLoaded', () => {
 				fileManager.postRequest(`http://localhost:3010/${username}-files/?folderUrl=${dirUrl}`, 'myFile', file)
 					.then(response => response.json())
 					.then(({userFiles, memory, parentDir, message}) => {
+						fileManager
+							.renderTableBody(userFiles, parentDir)
+							.renderFileSystemMemory(memoryWrap, memory)
+							.messageAlert(messageWrap, message);
 						input.value = ''
-						fileManager.renderTableBody(userFiles, parentDir);
-						fileManager.renderFileSystemMemory(memoryWrap, memory);
-						fileManager.messageAlert(messageWrap, message)
 					})
 					.catch(error => {
 						fileManager.messageAlert(messageWrap, error)
