@@ -18,7 +18,7 @@
                     <tbody>
                     {{#if userFilesCount}}
                         {{#each userFiles}}
-                            <tr data-id="{{this.id}}"
+                            <tr
                                 {{#if this.isDir}}
                                 data-type="dir"
                                 data-dir="{{this.dir}}"
@@ -51,7 +51,6 @@
         </main>
         <aside class="col-lg-3">
             <div class="information">
-                <h3>Information</h3>
                 <div class="information-media">
                     <img src="/img/folder.svg" alt="img">
                 </div>

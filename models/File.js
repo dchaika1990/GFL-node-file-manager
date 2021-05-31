@@ -50,7 +50,6 @@ class FileApp {
 				try {
 					const {basename: base, dir} = path.parse(path.join(pathName, item));
 					const stats = fs.statSync(path.join(pathName, item));
-					let id = Math.floor(Math.random() * 10000) + i
 					let extname = path.extname(item)
 					let isImg = false;
 					if (extname === '.jpg' || extname === '.png') {
@@ -58,7 +57,6 @@ class FileApp {
 					}
 					if (stats.isFile()) {
 						res.push({
-							id: id,
 							dirname: __dirname,
 							name: item,
 							src: '/' + pathName + '/' + item,
@@ -73,7 +71,6 @@ class FileApp {
 						});
 					} else {
 						res.push({
-							id: id,
 							name: item,
 							basename: base,
 							dir,
